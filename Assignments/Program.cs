@@ -5,7 +5,6 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using static System.ConsoleColor;
 
 namespace Spark;
 
@@ -15,46 +14,53 @@ public class T1 {
       Console.WriteLine ("\x1B[4m" + "Decimal to Binary & Hexadecimal:" + "\x1B[0m");
       for (int i = 0; i < testCases.Count; i++) {
          var item = testCases[i];
-         Console.WriteLine ($"\n{i + 1}) {item}: ");
-         Console.Write ("Binary: ", 16);
-         WriteInYellow (BinaryFormOf (item));
-         Console.Write ("Hexadecimal: ", 16);
-         WriteInYellow (HexaDecFormOf (item));
+         Console.WriteLine ($"\n{i + 1}) {item}");
+         PrintResult (item);
       }
       Console.Write ("\nTry Yourself! Enter input number: ");
       if (int.TryParse (Console.ReadLine (), out int num)) {
-         Console.Write ("In Binary: ", 16);
-         WriteInYellow (BinaryFormOf (num));
-         Console.Write ("In Hexadecimal: ", 16);
-         WriteInYellow (HexaDecFormOf (num));
+         PrintResult (num);
       }
    }
+
+   /// <summary>Prints the input num in both binary and hexadecimal in the console page</summary>
+   public static void PrintResult (int num) {
+      Console.Write ("In Binary     : ");
+      WriteInYellow (BinaryFormOf (num));
+      Console.Write ("In Hexadecimal: ");
+      WriteInYellow (HexaDecFormOf (num));
+   }
+
    /// <summary>Converts input integer to a binary form</summary>
    public static string BinaryFormOf (int num) {
       if (num == 0) return "0";
-      string s = "";
+      List<char> bin = new ();
       while (num > 0) {
-         s = ((num % 2 == 0) ? "0" : "1") + s;
+         if (num % 2 == 0) bin.Add ('0');
+         else bin.Add ('1');
          num /= 2;
       }
-      return s;
+      return new string (Enumerable.Reverse (bin).ToArray ());
    }
 
    /// <summary>Converts input integer to a hexadecimal form</summary>
    public static string HexaDecFormOf (int num) {
       if (num == 0) return "0";
-      string s = "";
+      List<char> hex = new ();
       while (num > 0) {
          int a = num % 16;
-         s = ((a < 10) ? a : $"{(char)(87 + a)}") + s;
+         if (a < 10) hex.Add (Convert.ToChar ($"{a}"));
+         // THE ASCII value for the small letter alphabets starts with 97. So if a = 10, then (87 + a) = 'a' and so on.
+         else hex.Add ((char)(87 + a)); 
          num /= 16;
       }
-      return s;
+      return new string (Enumerable.Reverse(hex).ToArray());
    }
 
    /// <summary>Writes input string in console with foreground colour as yellow</summary>
    public static void WriteInYellow (string output) {
-      Console.WriteLine (output, Console.ForegroundColor = Yellow);
+      Console.ForegroundColor = ConsoleColor.Yellow;
+      Console.WriteLine (output);
       Console.ResetColor ();
    }
 }
