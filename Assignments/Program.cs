@@ -10,7 +10,7 @@ public class T7 {
    public static void Main () {
       Console.OutputEncoding = System.Text.Encoding.UTF8;
       Console.WriteLine ("\n\x1B[4m" + "Printing 8x8 Chess Board:\n" + "\x1B[0m");
-      Console.Write ("In which way do you want the Chess Board be printed.\n\t1. WITH Unicode\n\t2. WITHOUT Unicode\nEnter (1) or (2): ");
+      Console.Write ("In which way do you want the Chess Board be printed.\n\t1. WITH Box Unicodes\n\t2. WITHOUT Box Unicodes\nEnter (1) or (2): ");
       string choice = Console.ReadLine ();
       if (choice == "1") PrintChessBoard1 ();
       else PrintChessBoard2 ();
