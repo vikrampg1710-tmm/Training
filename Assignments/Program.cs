@@ -26,10 +26,11 @@ public class T3 {
    /// <summary>Prints the series of n Fibonacci numbers</summary>
    public static void FiboSeries (int count) {
       if (count <= 0) Console.WriteLine ("Please enter a +ve value");
-      var (f0, f1) = (0, 1);
-      while (0 < count--) {
+      BigInteger f0 = 0, f1 = 1;
+      while (count > 0) {
          Console.Write ($"{f0}  ");
          (f0, f1) = (f1, f0 + f1);
+         count--;
       }
    }
 
@@ -53,7 +54,7 @@ public class T3 {
       return (BigInteger)(Math.Ceiling (Math.Pow (phi, n) - Math.Pow (1 - phi, n)) / sqrt5);
    }
 
-   public static Dictionary<int, BigInteger> Fibos = new ();
+   private static Dictionary<int, BigInteger> Fibos = new ();
    /// <summary>Returns nth Fibonacci number using caching</summary>
    public static BigInteger NthFib2 (int n) {
       Console.ForegroundColor = Green;
