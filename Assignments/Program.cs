@@ -14,13 +14,13 @@ public class T1 {
       Console.WriteLine ("\x1B[4m" + "Decimal to Binary & Hexadecimal:" + "\x1B[0m");
       for (int i = 0; i < testCases.Count; i++) {
          var item = testCases[i];
-         Console.WriteLine ($"\n{i + 1}) {item}");
+         Console.WriteLine ();
+         Console.WriteLine ($"{i + 1}) {item}");
          PrintResult (item);
       }
-      Console.Write ("\nTry Yourself! Enter input number: ");
-      if (int.TryParse (Console.ReadLine (), out int num)) {
+      Console.Write ("\nTry yourself! Enter input number: ");
+      if (int.TryParse (Console.ReadLine (), out int num))
          PrintResult (num);
-      }
    }
 
    /// <summary>Prints the input num in both binary and hexadecimal in the console page</summary>
@@ -49,18 +49,18 @@ public class T1 {
       List<char> hex = new ();
       while (num > 0) {
          int a = num % 16;
-         if (a < 10) hex.Add (Convert.ToChar ($"{a}"));
+         if (a < 10) hex.Add (Convert.ToChar (a));
          // THE ASCII value for the small letter alphabets starts with 97. So if a = 10, then (87 + a) = 'a' and so on.
          else hex.Add ((char)(87 + a)); 
          num /= 16;
       }
-      return new string (Enumerable.Reverse(hex).ToArray());
+      return new string (Enumerable.Reverse (hex).ToArray ());
    }
 
    /// <summary>Writes input string in console with foreground colour as yellow</summary>
-   public static void WriteInYellow (string output) {
+   static void WriteInYellow (string input) {
       Console.ForegroundColor = ConsoleColor.Yellow;
-      Console.WriteLine (output);
+      Console.WriteLine (input);
       Console.ResetColor ();
    }
 }
