@@ -7,18 +7,18 @@ namespace Spark;
 public class T3 {
    public static void Main () {
       Console.WriteLine ("\x1B[4m" + "Fibonacci Series Printer:-" + "\x1B[0m");
-      List<int> testCases = new () { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 15, 20, 25};
+      List<int> testCases = new () { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 15, 20, 25 };
       foreach (int i in testCases) {
          Console.Write ($"\nf{i} ==> ");
          Console.ForegroundColor = Yellow;
          FiboSeries (i);
          Console.ResetColor ();
       }
-      Console.Write ("\n\nTry Yourself! Enter the length of series, l = ");
-      if (int.TryParse (Console.ReadLine (), out int l)) {
-         Console.Write ($"\nf{l} ==> ");
+      Console.Write ("\n\nTry Yourself! Enter the length of series, len = ");
+      if (int.TryParse (Console.ReadLine (), out int len)) {
+         Console.Write ($"\nf{len} ==> ");
          Console.ForegroundColor = Yellow;
-         FiboSeries (l);
+         FiboSeries (len);
          Console.ResetColor ();
       }
    }
@@ -51,20 +51,21 @@ public class T3 {
       //This method works upto (n <= 71)
       double sqrt5 = Math.Sqrt (5);
       double phi = (sqrt5 + 1) / 2; n--;
+      //f(n) = [(psi)^n - (1 - psi)^n)]/sqrt5
       return (BigInteger)(Math.Ceiling (Math.Pow (phi, n) - Math.Pow (1 - phi, n)) / sqrt5);
    }
-
-   private static Dictionary<int, BigInteger> Fibos = new ();
-   /// <summary>Returns nth Fibonacci number using caching</summary>
+ 
+   /// <summary>Returns nth Fibonacci number using Memoization</summary>
    public static BigInteger NthFib2 (int n) {
       Console.ForegroundColor = Green;
-      if (n == 1) return 0;
-      if (n == 2) return 1;
-      if (!Fibos.TryGetValue (n, out BigInteger value)) {
+      if (n == 1 || n == 2) return n - 1;
+      if (!sFibos.TryGetValue (n, out BigInteger value)) {
          value = NthFib2 (n - 1) + NthFib2 (n - 2);
-         Fibos.Add (n, value);
+         sFibos.Add (n, value);
       }
       return value;
    }
+
+   static Dictionary<int, BigInteger> sFibos = new ();
    #endregion
 }
