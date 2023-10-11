@@ -30,7 +30,8 @@ public class T15 {
 
    /// <summary>Prints the result whether the input is isogram or not</summary>
    public static void PrintResult (string input) {
-      (string output, Console.ForegroundColor) = IsIsogram (input) ? ("Isogram", Green) : ("Not an Isogram", Red);
+      (string output, Console.ForegroundColor) = IsIsogram (input) ? ("Isogram", Green) 
+                                                                   : ("Not an Isogram", Red);
       Console.WriteLine ($"{output}");
       Console.ResetColor ();
    }
@@ -39,10 +40,10 @@ public class T15 {
    public static bool IsIsogram (string input) {
       if (input.Length == 0) return false;
       input = input.ToUpper ();
-      Dictionary<char, bool?> freq = new ();
+      Dictionary<char, int?> freq = new ();
       foreach (char c in input) {
-         if (freq.TryGetValue (c, out bool? _)) return false;
-         else freq.Add (c, null);
+         if (freq.TryGetValue (c, out int? _)) return false;
+         freq.Add (c, null);
       }
       return true;
    }
