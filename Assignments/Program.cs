@@ -1,10 +1,15 @@
 ﻿// ---------------------------------------------------------------------------------------
+// Spark23 Assignments
+// Copyright (c) Metamation India.
+// ---------------------------------------------------------------------------------------
+// Program.cs
 // T11 - Digital Root
 // ---------------------------------------------------------------------------------------
 
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using static System.ConsoleColor;
 
 namespace Spark;
 
@@ -17,14 +22,12 @@ public class T10 {
       int[] testCases = new int[] { 0, 1, 9, 21, 321, 4321, 54321, 654321, 7654321, 87654321, 987654321 };
       for (int i = 0; i < testCases.Length; i++) {
          Console.Write ($"{i}. dgrt({testCases[i]}) = ");
-         Console.WriteLine ($"{DigitalRootOf (testCases[i])}", Console.ForegroundColor = ConsoleColor.Cyan);
-         Console.ResetColor ();
+         PrintInColor ($"{DigitalRootOf (testCases[i])}", Cyan);
       }
       Console.Write ("\nNow, lets try! Please enter a number: ");
       if (long.TryParse (Console.ReadLine (), out long input) && input > 0) {
          Console.Write ($"dgrt({input}) = ");
-         Console.WriteLine ($"{DigitalRootOf (input)}", Console.ForegroundColor = ConsoleColor.Cyan);
-         Console.ResetColor ();
+         PrintInColor ($"{DigitalRootOf (input)}", Cyan);
          if (input > 9) {
             Console.Write ("Show the steps (y/n)? ");
             if (char.ToLower (Console.ReadKey ().KeyChar) == 'y') {
@@ -32,16 +35,14 @@ public class T10 {
                ShowSteps (input);
             }
          }
-      } 
-      else Console.WriteLine ("Incorrect Input", Console.ForegroundColor = ConsoleColor.Red);
+      } else PrintInColor ("Incorrect Input", Red);
       Console.ResetColor ();
    }
 
    /// <summary>Returns the digital root of a input number</summary>
    public static long DigitalRootOf (long input) {
       if (input == 0) return 0;
-      else if (input % 9 == 0 && input > 0) return 9;
-      else return input % 9;
+      else return 1 + (input - 1) % 9;
    }
 
    /// <summary>Prints the steps to compute digital roots of input number</summary>
@@ -68,11 +69,15 @@ public class T10 {
             Console.CursorLeft = 12 + x * 5;
             Console.WriteLine ($" = {sum}");
             if (sum > 9) SumOf (sum);
-            else {
-               Console.WriteLine ($"∴ dgrt({input}) =  {sum}", Console.ForegroundColor = ConsoleColor.Yellow);
-               Console.ResetColor ();
-            }
+            else PrintInColor ($"∴ dgrt({input}) =  {sum}", Green);
          }
       }
+   }
+
+   /// <summary>Prints the given string in specified foreground color</summary>
+   public static void PrintInColor (string input, ConsoleColor ColorName) {
+      Console.ForegroundColor = ColorName;
+      Console.WriteLine (input);
+      Console.ResetColor ();
    }
 }
