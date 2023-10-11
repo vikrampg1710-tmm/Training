@@ -1,4 +1,8 @@
 ﻿// ---------------------------------------------------------------------------------------
+// Spark23 Assignments
+// Copyright (c) Metamation India.
+// ---------------------------------------------------------------------------------------
+// Program.cs
 // T14 - Reduced String
 // ---------------------------------------------------------------------------------------
 using System;
@@ -30,7 +34,7 @@ public class T14 {
          if (output[^1] != c) output.Add (c);
          else output.RemoveAt (output.Count - 1);
       }
-      return new string (output.ToArray());
+      return new string (output.ToArray ());
    }
 
    /// <summary>Prints the input string with Foreground colour as blue</summary>
