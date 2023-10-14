@@ -40,10 +40,10 @@ public class T15 {
    public static bool IsIsogram (string input) {
       if (input.Length == 0) return false;
       input = input.ToUpper ();
-      Dictionary<char, int?> freq = new ();
+      Dictionary<char, int> freq = new ();
       foreach (char c in input) {
-         if (freq.TryGetValue (c, out int? _)) return false;
-         freq.Add (c, null);
+         if (freq.TryGetValue (c, out int _)) return false;
+         freq.Add (c, 1);
       }
       return true;
    }
