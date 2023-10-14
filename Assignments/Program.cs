@@ -1,10 +1,13 @@
 ﻿// ---------------------------------------------------------------------------------------
+// Spark23 Assignments
+// Copyright (c) Metamation India.
+// ---------------------------------------------------------------------------------------
+// Program.cs
 // T10 - Reverse perform a given integer
 // ---------------------------------------------------------------------------------------
 
 using System;
-using System.Numerics;
-
+using static System.ConsoleColor;
 namespace Spark;
 
 public class Q10 {
@@ -13,18 +16,25 @@ public class Q10 {
       int[] testCases = new int[] { 0, 1, 9, 21, 321, 4321, 54321, 654321, 7654321, 87654321, 987654321, -1, -54321, -987654321 };
       int count = 0;
       foreach (int i in testCases) {
-         Console.Write ($"{count++}. {i} ==> ");
-         Console.WriteLine ($"{ReverseInteger (i)}", Console.ForegroundColor = ConsoleColor.Cyan);
-         Console.ResetColor ();
+         Console.Write ($"{count++}. ");
+         PrintResult (i);
+         Console.WriteLine ();
       }
       Console.Write ("\nNow, lets try! Please enter an number: ");
-      string num = Console.ReadLine ();
-      if (num.Length < 10 && int.TryParse (num, out int input)) { 
-         Console.Write ($"{input} ==> ");
-         Console.WriteLine ($"{ReverseInteger (input)}", Console.ForegroundColor = ConsoleColor.Cyan);
-         Console.ResetColor ();
+      PrintResult (Convert.ToInt32(Console.ReadLine ()));
+   }
+
+
+   /// <summary>Prints the result in the console page</summary>
+   public static void PrintResult (int input) {
+      int output = ReverseInteger (input);
+      Console.Write ($"{input} ==> ");
+      Console.ForegroundColor = Cyan;
+      Console.Write (output);
+      if (input == output) {
+         Console.ForegroundColor = Yellow;
+         Console.Write (" (Palindrome)");
       }
-      else Console.WriteLine ("Incorrect Input", Console.ForegroundColor = ConsoleColor.Red);
       Console.ResetColor ();
    }
 
