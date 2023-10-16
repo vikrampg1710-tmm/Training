@@ -55,14 +55,14 @@ public class T3 {
    }
 
    /// <summary>Returns nth Fibonacci number using golden ratio</summary>
-   public static ulong NthFib2 (int n) {
-      //This method works upto (n <= 72)
+   public static BigInteger NthFib2 (int n) {
+      // This method works upto (n <= 72)
       double sqrt5 = Math.Sqrt (5);
       double phi = (sqrt5 + 1) / 2; n--;
-      //f(n) = [(psi)^n - (1 - psi)^n)]/sqrt5
-      return (ulong)(Math.Ceiling (Math.Pow (phi, n) - Math.Pow (1 - phi, n)) / sqrt5);
+      // f(n) = [psi^n - (1 - psi)^n)] / sqrt5
+      return (BigInteger)(Math.Ceiling (Math.Pow (phi, n) - Math.Pow (1 - phi, n)) / sqrt5);
    }
- 
+
    /// <summary>Returns nth Fibonacci number using Memoization</summary>
    public static BigInteger NthFib3 (int n) {
       if (n == 1 || n == 2) return n - 1;
