@@ -14,7 +14,7 @@ namespace Spark;
 public class T16 {
    public static void Main () {
       Console.WriteLine ("\x1B[4m" + "Longest Abcdedarian Finder:-" + "\x1B[0m");
-      List<string> words = new () { "apple", "first", "antwz", "efghijlk", "pqrst", "orange" };
+      List<string> words = new () { "apple", "firsty", "antwz", "efghijlk", "pqrst", "orange" };
       PrintResult (words);
       Console.WriteLine ("\nNow, let's try words 3 different words:- ");
       words.Clear ();
@@ -27,7 +27,7 @@ public class T16 {
 
    /// <summary>Returns the Longest Abcdedarian Word from the given list of words</summary>
    public static string LongestAbcdedarianWordOf (List<string> input) {
-      input = input.OrderBy (a => a.Length).ToList ();
+      input = input.OrderByDescending (a => a.Length).ToList ();
       foreach (string word in input)
          if (word == string.Concat (word.OrderBy (a => a))) return word;
       return "";
@@ -37,7 +37,7 @@ public class T16 {
    public static void PrintResult (List<string> input) {
       Console.Write ("Input words: ");
       Console.ForegroundColor = ConsoleColor.Yellow;
-      foreach (var wrd in input) Console.Write ($"{wrd}  ");
+      foreach (var w in input) Console.Write ($"{w}  ");
       Console.ResetColor ();
       Console.Write ($"\r\nThe Longest Abcdarian words is ");
       Console.ForegroundColor = ConsoleColor.Green;
