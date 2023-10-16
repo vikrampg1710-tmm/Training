@@ -15,7 +15,6 @@ public class T16 {
    public static void Main () {
       Console.WriteLine ("\x1B[4m" + "Longest Abcdedarian Finder:-" + "\x1B[0m");
       List<string> words = new () { "apple", "first", "antwz", "efghijlk", "pqrst", "orange" };
-      words = words.OrderBy (a => a.Length).ToList ();
       PrintResult (words);
       Console.WriteLine ("\nNow, let's try words 3 different words:- ");
       words.Clear ();
@@ -28,13 +27,13 @@ public class T16 {
 
    /// <summary>Returns the Longest Abcdedarian Word from the given list of words</summary>
    public static string LongestAbcdedarianWordOf (List<string> input) {
-      input.Sort ();
+      input = input.OrderBy (a => a.Length).ToList ();
       foreach (string word in input)
          if (word == string.Concat (word.OrderBy (a => a))) return word;
       return "";
    }
 
-   /// <summary>Prints the result whether the words is isogram or not</summary>
+   /// <summary>Prints the longest abcedarian word using the above method</summary>
    public static void PrintResult (List<string> input) {
       Console.Write ("Input words: ");
       Console.ForegroundColor = ConsoleColor.Yellow;
@@ -42,9 +41,8 @@ public class T16 {
       Console.ResetColor ();
       Console.Write ($"\r\nThe Longest Abcdarian words is ");
       Console.ForegroundColor = ConsoleColor.Green;
-      Console.WriteLine ($"[{LongestAbcdedarianWordOf(input)}]");
+      Console.WriteLine ($"[{LongestAbcdedarianWordOf (input)}]");
       Console.ResetColor ();
    }
 }
 
-   
