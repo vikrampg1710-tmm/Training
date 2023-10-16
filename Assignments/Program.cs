@@ -13,7 +13,7 @@ namespace Spark;
 public class T17 {
    public static void Main () {
       Console.WriteLine ("\x1B[4m" + "String Permutator:-" + "\x1B[0m");
-      List<string> words = new () { "or", "not" };
+      List<string> words = new () { "or", "not", "abcd" };
       foreach (string word in words) PrintResult (word);
       Console.WriteLine ();
       Console.Write ("Now, let's try entering a word: ");
@@ -35,40 +35,26 @@ public class T17 {
 
    /// <summary>Returns the list of permutated strings of given input word</summary>
    public static List<string> Permutated (string input) {
+      int n = input.Length;
       input = input.ToUpper ();
-      if (input.Length == 2) return Permutated2 (input);
-      return Permutated34 (input);
-
-      /// <summary>Permutates given 2-letter word</summary>
-      static List<string> Permutated2 (string input)
-         => new () { $"{input[0]}{input[1]}", $"{input[1]}{input[0]}" };
-
-      /// <summary>Permutates given 3 [or] 4-letter word</summary>
-      static List<string> Permutated34 (string input) {
-         int n = input.Length;
-         List<string> output = new (),
-                       store = new ();
-         if (n == 3) {
-            for (int i = 0; i < 3; i++)
-               store.AddRange (Permutated2 ($"{input[i]}{input[(i + 1) % n]}"));
-         } else {
-            for (int i = 0; i < 4; i++)
-               store.AddRange (Permutated34 ($"{input[i]}{input[(i + 1) % 4]}{input[(i + 2) % 4]}"));
-         }
-         foreach (char c in input) {
-            foreach (string s in store) {
-               if (!s.Contains (c)) { 
-                  string a = c + s, b = s + c;
-                  if (!output.Contains (a)) output.Add (a);
-                  if (!output.Contains (b)) output.Add (b);
-               }
+      List<string> output = new (), store = new ();
+      if (n == 2) return new () { $"{input[0]}{input[1]}", $"{input[1]}{input[0]}" };
+      else if (n == 3) {
+         for (int i = 0; i < n; i++)
+            store.AddRange (Permutated ($"{input[i]}{input[(i + 1) % n]}"));
+      } else {
+         for (int i = 0; i < n; i++)
+            store.AddRange (Permutated ($"{input[i]}{input[(i + 1) % n]}{input[(i + 2) % n]}"));
+      }
+      foreach (char c in input) {
+         foreach (string s in store) {
+            if (!s.Contains (c)) {
+               string a = c + s, b = s + c;
+               if (!output.Contains (a)) output.Add (a);
+               if (!output.Contains (b)) output.Add (b);
             }
          }
-         return output;
       }
+      return output;
    }
 }
-
-
-
-
