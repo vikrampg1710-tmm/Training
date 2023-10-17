@@ -6,4 +6,8 @@
     <GenerateDocumentationFile>True</GenerateDocumentationFile>
   </PropertyGroup>
 
+  <ItemGroup>
+    <EmbeddedResource Include="Data\T2 - State Machine Diagram (3digit num to Words).jpg" />
+  </ItemGroup>
+
 </Project>
