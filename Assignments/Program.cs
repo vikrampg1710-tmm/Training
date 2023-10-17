@@ -8,12 +8,13 @@
 
 using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace Spark;
 public class T17 {
    public static void Main () {
       Console.WriteLine ("\x1B[4m" + "String Permutator:-" + "\x1B[0m");
-      List<string> words = new () { "or", "not", "abcd" };
+      List<string> words = new () { "or", "not", "abcd", "blade" };
       foreach (string word in words) PrintResult (word);
       Console.WriteLine ();
       Console.Write ("Now, let's try entering a word: ");
@@ -22,6 +23,7 @@ public class T17 {
 
    /// <summary> Prints the perumuted strings of given input word</summary>
    public static void PrintResult (string input) {
+      if (input.Length > 7) Console.WriteLine ("Loading...");
       Console.WriteLine ();
       Console.WriteLine ($"Input word: {input}");
       var answer = Permutated (input);
@@ -37,21 +39,22 @@ public class T17 {
    public static List<string> Permutated (string input) {
       int n = input.Length;
       input = input.ToUpper ();
-      List<string> output = new (), store = new ();
       if (n == 2) return new () { $"{input[0]}{input[1]}", $"{input[1]}{input[0]}" };
-      else if (n == 3) {
-         for (int i = 0; i < n; i++)
-            store.AddRange (Permutated ($"{input[i]}{input[(i + 1) % n]}"));
-      } else {
-         for (int i = 0; i < n; i++)
-            store.AddRange (Permutated ($"{input[i]}{input[(i + 1) % n]}{input[(i + 2) % n]}"));
+      List<string> output = new (), store = new ();
+      List<char> chars = new ();
+      for (int i = 0; i < n; i++) {
+         for (int j = 0, k = i; j < n - 1; j++) {
+            chars.Add (input[k % n]);
+            k += 1;
+         }
+         store.AddRange (Permutated (new string (chars.ToArray ())));
+         chars.Clear ();
       }
       foreach (char c in input) {
          foreach (string s in store) {
             if (!s.Contains (c)) {
-               string a = c + s, b = s + c;
+               string a = c + s;
                if (!output.Contains (a)) output.Add (a);
-               if (!output.Contains (b)) output.Add (b);
             }
          }
       }
