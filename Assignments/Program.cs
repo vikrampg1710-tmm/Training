@@ -9,6 +9,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text;
 using static System.ConsoleColor;
 
 namespace Spark;
@@ -16,64 +17,80 @@ namespace Spark;
 public class T2 {
    public static void Main () {
       List<int> wTestCases = new () { 0, 1, 4, 9, 10, 11, 16, 25, 36, 49, 50, 81, 100, 109, 125, 216,
-         343, 729, 1000, 12001, 66000, 123450, 1000909, 987654321, 100000001 };
-      List<int> rTestCases = new () { 1, 4, 5, 9, 10, 47, 94, 100, 345, 400, 499, 500, 900, 998,
-         1000, 1500, 1729, 1888, 3495, 3913, 4000, 4096, 4509, 4761, 4999 };
+                                    343, 729, 1000, 12001, 66000, 123450, 1000909, 987654321, 100000001 },
+                rTestCases = new () { 0, 1, 4, 5, 9, 10, 47, 94, 100, 345, 400, 499, 500, 900, 998, 1000, 
+                                    1500, 1729, 1888, 3495, 4000, 3999 };
       Console.WriteLine ("\x1B[4m" + "Numbers to Words:" + "\x1B[0m");
-      for (int i = 0; i < wTestCases.Count; i++)
-         PrintResult (i, wTestCases[i], true);
+      PrintResult (wTestCases, true);
       Console.WriteLine ("\n\x1B[4m" + "Numbers to Romans:" + "\x1B[0m");
-      for (int i = 0; i < rTestCases.Count; i++)
-         PrintResult (i, rTestCases[i], false);
+      PrintResult (rTestCases, false);
    }
 
-   /// <summary>Prints the words or roman numerals equivalent to the input number</summary>
-   public static void PrintResult (int index, int input, bool toWords) {
-      Console.Write ($"{index + 1,2}) {input,10} ==> ");
-      Console.ForegroundColor = Yellow;
-      Console.WriteLine (toWords ? ToWords (input) : ToRomans (input));
-      Console.ResetColor ();
+   /// <summary>Prints the Words or Roman numerals equivalent to the input number</summary>
+   public static void PrintResult (List<int> input, bool toWords) {
+      for (int i = 0; i < input.Count; i++) {
+         int n = input[i];
+         Console.Write ($"{i + 1,2}) {input[i],10} ==> ");
+         if (!toWords && n > 3999) {
+            Console.WriteLine ($"Invalid Input!");
+            continue;
+         }
+         Console.ForegroundColor = Green;
+         Console.WriteLine (toWords ? ToWords (input[i]) : ToRomans (input[i]));
+         Console.ResetColor ();
+      }
    }
 
-   /// <summary>Retuns the input number in words using State Machine</summary>
+   /// <summary>Returns the input number in words using State Machine</summary>
    public static string ToWords (int num) {
       if (num == 0) return "Zero";
-      string input = num.ToString ().PadLeft (9, '0'),
+      string input = num.ToString ().PadLeft (9, '0'), 
             output = "";
       List<string> ones = new () { "", "One", "Two", "Three", "Four", "Five", "Six", "Seven", "Eight", "Nine", "Ten",
       "Eleven", "Twelve", "Thirteen", "Fourteen", "Fifteen", "Sixteen", "Seventeen", "Eighteen", "Nineteen" },
                    tens = new () { "", "Ten", "Twenty", "Thirty", "Forty", "Fifty", "Sixty", "Seventy", "Eighty", "Ninety" };
 
-      // As this methods works till 9-digit number, this first loop segregates the input (string) into 3 + 3 + 3 digits, and parse into integer.
+      /*
+       This method works for a maximum of 9-digit number, and its process is explained below:
+      1. In the FIRST for-loop, input string of length 9 is segregated into 3 + 3 + 3 digits, each parsed into
+         3 digit integer, and made run into the second for-loop.
+         Eg: num = 123456, then input = "000123456" => part = { 000 (for i = 0); 123 (for i = 1); 456 (for i = 2) }
+      
+      2. In the SECOND for-loop, each single digits from 'part' stored in 'nthDigit' is taken out one by one and made 
+         run through the state machine.
+         Eg: part = 123 => nthDigit = { 3 (for n = 3); 2 (for n = 2); 1 (for n = 1) }
+             thirdDigit = 3 (3rd digit of part)
+
+      3. The state machine starts with the state of HUNDREDS as the maximum place value of any 3-digit number is 100.
+     
+      Overall, the first loop segregates the input string into three 3-digit numbers and supplies to the second loop,
+      which converts the supplied 3-digit number to equivalent words.  Finally all the words are added together and returned.
+       */
+
+      // FIRST for-loop:
       for (int i = 0; i < 3; i++) {
-         // Here part is FIRST 3-digits for (i = 0), SECOND 3-digits for (i = 1), and LAST 3-digits for (i = 2).
-         // Eg: num = 123456 ==> input = 000123456.  Then, part = 000 (for i = 0); 123 (for i = 1); 456 (for i = 2).
          int part = int.Parse (input.Substring (i * 3, 3));
-         // For any 3-digit number, the place value of first digit is always Hundreds.  So the state s always starts with Hundreds.
          State s = State.Hundreds;
-         // Below loop is used to take out digits ONE BY ONE from part and converted into words.
+         // SECOND for-loop:
          for (int n = 3; n > 0; n--) {
-            // nthDigit is the 3rd digit of part for (n = 3), and so on.
-            // onesDigit is the always the 3rd digit of part.
-            int nthDigit = part / (int)Math.Pow (10, n - 1) % 10, onesDigit = part % 10;
-            // The below switch cases is implemented based on the STATE MACHINE DIAGRAM attached in "Data".
+            int nthDigit = part / (int)Math.Pow (10, n - 1) % 10, thirdDigit = part % 10;
             switch (s, nthDigit) {
                case (State.Hundreds, >= 0 and <= 9): {
                      s = State.Tens;
                      if (nthDigit != 0) {
                         output += ones[nthDigit] + " Hundred ";
-                        if (part / 10 % 10 > 0 || onesDigit > 0) output += "and ";
+                        if (part / 10 % 10 > 0 || thirdDigit > 0) output += "and ";
                      }
                      break;
                   }
                case (State.Tens, 1): {
                      s = State.End;
-                     output += ones[10 + onesDigit] + " ";
+                     output += ones[10 + thirdDigit] + " ";
                      break;
                   }
                case (State.Tens, 0 or (>= 2 and <= 9)): {
                      s = State.Ones;
-                     if (nthDigit != 0) output += tens[nthDigit] + ((i == 2 && onesDigit > 0) ? "-" : " ");
+                     if (nthDigit != 0) output += tens[nthDigit] + ((i == 2 && thirdDigit > 0) ? "-" : " ");
                      break;
                   }
                case (State.Ones, >= 0 and <= 9): {
@@ -85,7 +102,8 @@ public class T2 {
             }
          }
          if (part > 0 && i != 2) {
-            var (cond, key) = (i == 0) ? (num / 1000 % 1000 > 0 || num % 1000 > 0, "Million") : (num % 1000 > 0, "Thousand");
+            int lastThreeDigit = num / 1000;
+            var (cond, key) = (i == 0) ? (num / 1000 % 1000 > 0 || lastThreeDigit > 0, "Million") : (lastThreeDigit > 0, "Thousand");
             output += key + (cond ? ", " : " ");
          }
       }
@@ -93,18 +111,21 @@ public class T2 {
    }
    enum State { Hundreds, Tens, Ones, End };
 
-   /// <summary>Converts input number to Roman Numerals</summary>
-   public static string ToRomans (int num) {
-      List<string> output = new ();
-      int[] value = { 1000, 900, 500, 400, 100, 90, 50, 40, 10, 9, 5, 4, 1 };
-      string[] roman = { "M", "CM", "D", "CD", "C", "XC", "L", "XL", "X", "IX", "V", "IV", "I" };
-      for (int i = 0; i < value.Length; i++) {
-         int x = value[i];
-         output.Add (string.Concat (Enumerable.Repeat (roman[i], num / x)));
-         num %= x;
+   /// <summary>Converts input number to Roman numerals</summary>
+   public static StringBuilder ToRomans (int num) {
+      StringBuilder output = new ();
+      if (num == 0) output.Append ("Zero has no symbol in Roman numerals system.");
+      else {
+         int[] value = { 1000, 900, 500, 400, 100, 90, 50, 40, 10, 9, 5, 4, 1 };
+         string[] roman = { "M", "CM", "D", "CD", "C", "XC", "L", "XL", "X", "IX", "V", "IV", "I" };
+         int v = Array.Find (value, a => a <= num);
+         for (int i = Array.IndexOf (value, v); i < value.Length; i++) {
+            int x = value[i], y = num / x;
+            output.Append (string.Concat (Enumerable.Repeat (roman[i], y)));
+            num %= x;
+         }
       }
-      return string.Join ("", output);
+      return output;
    }
 }
-
 
