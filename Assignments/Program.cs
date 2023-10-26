@@ -8,6 +8,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace Spark;
 public class T17 {
@@ -36,48 +37,64 @@ public class T17 {
    }
 
    /// <summary>Returns the list of permutated strings of given string</summary>
-   public static HashSet<string> PermutationsOf (string input) {
-      int len = input.Length;
-      HashSet<string> permutations = new ();
-      List<char> chars = new ();
-      for (int i = 0; i < len; i++)
-         chars.Add ((char)(48 + i));
-      var output = Permutated (new string (chars.ToArray ()));
-      chars.Clear ();
-      for (int i = 0; i < output.Count; i++) {
-         for (int j = 0; j < len; j++) {
-            int index = int.Parse ($"{output[i][j]}");
-            chars.Add (input[index]);
-         }
-         permutations.Add (new string (chars.ToArray ()));
-         chars.Clear ();
-      }
-      return permutations;
 
-      /// <summary>A local method which returns all the permutations of given isogram string</summary>
+   /* Working of this method is explained as follows:
+   1. Firstly, a char array named 'indexWord' is created and characters '0' to 'len - 1' is stored. (len = length of input string)
+   Eg: if input string is a 3-letter word, then indexWord = [ '0', '1', '2' ].
+   
+   2. This array is converted to a string and all its output are generated using a local recursive method
+   which works only for an isogram word, i.e. the word without any repeated characters in it.  The generated output of indexWord
+   are stored in list 'indexPerms'.  Eg: if indexWord = ['0', '1', '2'], indexPerms = { 012, 021, 102, 120, 201, 210 }
+
+   3. Now, each item is taken out from the above list one by one and applied to the input string to generate final permutated strings.
+   Eg: if input string = "NOT"
+                                        index value: 0     1     2
+                                        chars      : N     O     T
+   Permutations are { 012 ==> NOT, 021 ==> NTO, 102 ==> ONT, 120 ==> OTN, 201 ==> TNO, 210 ==> TON }
+   
+   4. For 4-letter input word, indexWord = [ '0', '1', '2', '3' ] and the further steps are same as follows.  Therefore, this way works for any length of word.
+   
+   5. Finally, the output strings are stored in a HashSet to avoid storing the duplicates.*/
+
+   public static HashSet<string> PermutationsOf (string input) {
+      input = input.ToUpper ();
+      int len = input.Length;
+      List<char> indexWord = new ();
+      for (char i = '0'; indexWord.Count < len; i++)
+         indexWord.Add (i);
+      List<string> indexPerms = Permutated (new string (indexWord.ToArray ()));
+      indexWord.Clear ();
+      HashSet<string> output = new ();
+      for (int i = 0; i < indexPerms.Count; i++) {
+         for (int j = 0; j < len; j++) {
+            int index = indexPerms[i][j] - '0';
+            indexWord.Add (input[index]);
+         }
+         output.Add (new string (indexWord.ToArray ()));
+         indexWord.Clear ();
+      }
+      return output;
+
+      /// <summary>A local method which returns all the output of given isogram string</summary>
       static List<string> Permutated (string input) {
          int n = input.Length;
-         input = input.ToUpper ();
          if (n == 2) return new () { $"{input[0]}{input[1]}", $"{input[1]}{input[0]}" };
-         List<string> output = new (), store = new ();
+         List<string> store = new ();
+         HashSet<string> output = new ();
          List<char> chars = new ();
          for (int i = 0; i < n; i++) {
-            for (int j = 0, k = i; j < n - 1; j++) {
+            for (int j = 0, k = i; j < n - 1; j++, k++)
                chars.Add (input[k % n]);
-               k += 1;
-            }
             store.AddRange (Permutated (new string (chars.ToArray ())));
             chars.Clear ();
          }
          foreach (char c in input) {
             foreach (string s in store) {
-               if (!s.Contains (c)) {
-                  string a = c + s;
-                  if (!output.Contains (a)) output.Add (a);
-               }
+               if (!s.Contains (c))
+                  output.Add (c + s);
             }
          }
-         return output;
+         return output.ToList ();
       }
    }
 }
