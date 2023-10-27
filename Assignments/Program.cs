@@ -44,7 +44,7 @@ public class T3 {
    }
 
    #region Nth Fibonacci Number:
-   /// <summary>Returns nth Fibonacci number using caching</summary>
+   /// <summary>Returns nth Fibonacci number</summary>
    public static BigInteger NthFib1 (int n) {
       BigInteger f0 = 0, f1 = 1;
       while (0 <= n--) {
@@ -52,15 +52,6 @@ public class T3 {
          (f0, f1) = (f1, f0 + f1);
       }
       return f0;
-   }
-
-   /// <summary>Returns nth Fibonacci number using golden ratio</summary>
-   public static BigInteger NthFib2 (int n) {
-      // This method works upto (n <= 72)
-      double sqrt5 = Math.Sqrt (5);
-      double phi = (sqrt5 + 1) / 2; n--;
-      // f(n) = [psi^n - (1 - psi)^n)] / sqrt5
-      return (BigInteger)(Math.Ceiling (Math.Pow (phi, n) - Math.Pow (1 - phi, n)) / sqrt5);
    }
 
    /// <summary>Returns nth Fibonacci number using Memoization</summary>
