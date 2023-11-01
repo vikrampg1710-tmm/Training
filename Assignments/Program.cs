@@ -14,7 +14,7 @@ using static System.ConsoleColor;
 namespace Spark;
 public class T18 {
    public static void Main () {
-      List<int> task = new () { 0, 1, 2, 5, 8, 11, 15, 17, 20, 25, 10, 9 },
+      List<int> task = new () { 0, 1, 2, 5, 8, 11, 15, 17, 20, 25, 26, 10, 9 },
                 task2 = new () { 0, 1, 7, 10, 151, 370, 371, 372, 9474, 93085, 93084, 4210816, 4210818, 24678050, 24678051 };
       Console.WriteLine ("\x1B[4m" + "Nth Armstrong Number Computer:-" + "\x1B[0m");
       PerformTasks (task, true);
@@ -51,8 +51,9 @@ public class T18 {
          if (!sArmstrongs.Contains (i) && IsArmstrong (i)) sArmstrongs.Add (i);
       }
    }
+   static List<int> sArmstrongs = new ();
 
-   /// <summary>Checks wherether the given input number is an armstrong number or not</summary>
+   /// <summary>Checks whether the given input number is an armstrong number or not</summary>
    public static bool IsArmstrong (int num) {
       int temp = num, sum = 0, d;
       int n = num.ToString ().Length;
@@ -63,5 +64,4 @@ public class T18 {
       }
       return num == sum;
    }
-   static List<int> sArmstrongs = new ();
 }
