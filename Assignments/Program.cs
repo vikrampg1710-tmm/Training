@@ -8,36 +8,36 @@
 
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using static System.ConsoleColor;
 
 namespace Spark;
 public class T18 {
    public static void Main () {
-      List<int> task1 = new () { 0, 1, 2, 5, 9, 10, 15, 20, 25, 27 },
+      List<int> task = new () { 0, 1, 2, 5, 9, 10, 15, 20, 26 },
                 task2 = new () { 0, 1, 7, 10, 151, 370, 371, 372, 9474, 93085, 93084, 4210816, 4210818, 24678050, 24678051 };
       Console.WriteLine ("\x1B[4m" + "Nth Armstrong Number Computer:-" + "\x1B[0m");
-      PerformTasks (task1, true);
+      PerformTasks (task, true);
       Console.WriteLine ();
       Console.WriteLine ("\x1B[4m" + "Armstrong Number Checker:-" + "\x1B[0m");
       PerformTasks (task2, false);
    }
 
-   /// <summary>Print the results in the console page</summary>
-   public static void PerformTasks (List<int> input, bool isTask1) {
+   /// <summary>Prints the results in the console page</summary>
+   public static void PerformTasks (List<int> input, bool computeNthArmstrong) {
       for (int i = 0; i < input.Count; i++) {
          int num = input[i];
-         string th = (num > 3 || num == 0) ? "th" : (num == 1 ? "st" : (num == 2 ? "nd" : "rd"));
+         string ordinal = (num > 3 || num == 0) ? "th" : (num == 1 ? "st" : (num == 2 ? "nd" : "rd"));
          Console.Write ($"{i + 1,2}. {num}");
-         if (isTask1) {
-            Console.Write ($"{th} Armstrong Number = ");
+         if (computeNthArmstrong) {
+            Console.Write ($"{ordinal} Armstrong Number = ");
             Console.ForegroundColor = Green;
             Console.WriteLine (NthArmstrongNum (num));
             Console.ResetColor ();
-         }
-         else {
+         } else {
             Console.Write (" - ");
-            (bool, int?) pair = IsArmsNum (num);
-            (string answer, Console.ForegroundColor) = pair.Item1 ? ($"{pair.Item2}{th} Armstrong Number", Green) : ("Not an Armstrong Number", Red);
+            (bool, int) pair = IsArmstrong (num);
+            (string answer, Console.ForegroundColor) = pair.Item1 ? ($"{pair.Item2}{ordinal} Armstrong Number", Green) : ("Not an Armstrong Number", Red);
             Console.WriteLine (answer);
             Console.ResetColor ();
          }
@@ -46,20 +46,15 @@ public class T18 {
 
    /// <summary>Returns the Nth Armstrong number of given input</summary>
    public static int NthArmstrongNum (int input) {
-      int nCount = 0;
-      for (int i = 0; nCount <= input; i++) {
-         if (IsArmsNum (i).Item1) {
-            if (!sArmstrong.Contains (i)) sArmstrong.Add (i);
-            nCount++;
-         }
-         if (nCount == input) return i + 1;
+      for (int i = 0; ; i++) {
+         if (!sArmstrongs.Contains (i) && IsArmstrong (i).Item1) 
+            sArmstrongs.Add (i);
+         if (sArmstrongs.Count - 1 == input) return sArmstrongs.Last();
       }
-
-      return 0;
    }
 
    /// <summary>Checks wherether the given input number is an armstrong number or not</summary>
-   public static (bool, int?) IsArmsNum (int num) {
+   public static (bool, int) IsArmstrong (int num) {
       int temp = num, sum = 0, d;
       int n = num.ToString ().Length;
       while (temp > 0) {
@@ -67,9 +62,7 @@ public class T18 {
          temp = (temp - d) / 10;
          sum += (int)Math.Pow (d, n);
       }
-      return sum == num ? (true, sArmstrong.IndexOf (num)) : (false, null);
+      return (num == sum, sArmstrongs.IndexOf (num));
    }
-   static List<int> sArmstrong = new ();
+   static List<int> sArmstrongs = new ();
 }
-
-
