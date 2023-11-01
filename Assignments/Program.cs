@@ -14,7 +14,7 @@ using static System.ConsoleColor;
 namespace Spark;
 public class T18 {
    public static void Main () {
-      List<int> task = new () { 0, 1, 2, 5, 9, 10, 15, 20, 26 },
+      List<int> task = new () { 0, 1, 2, 5, 8, 11, 15, 17, 20, 25, 10, 9 },
                 task2 = new () { 0, 1, 7, 10, 151, 370, 371, 372, 9474, 93085, 93084, 4210816, 4210818, 24678050, 24678051 };
       Console.WriteLine ("\x1B[4m" + "Nth Armstrong Number Computer:-" + "\x1B[0m");
       PerformTasks (task, true);
@@ -36,8 +36,7 @@ public class T18 {
             Console.ResetColor ();
          } else {
             Console.Write (" - ");
-            (bool, int) pair = IsArmstrong (num);
-            (string answer, Console.ForegroundColor) = pair.Item1 ? ($"{pair.Item2}{ordinal} Armstrong Number", Green) : ("Not an Armstrong Number", Red);
+            (string answer, Console.ForegroundColor) = IsArmstrong (num) ? ("An Armstrong Number", Green) : ("Not an Armstrong Number", Red);
             Console.WriteLine (answer);
             Console.ResetColor ();
          }
@@ -46,15 +45,15 @@ public class T18 {
 
    /// <summary>Returns the Nth Armstrong number of given input</summary>
    public static int NthArmstrongNum (int input) {
-      for (int i = 0; ; i++) {
-         if (!sArmstrongs.Contains (i) && IsArmstrong (i).Item1) 
-            sArmstrongs.Add (i);
-         if (sArmstrongs.Count - 1 == input) return sArmstrongs.Last();
+      int start = sArmstrongs.Count == 0 ? 0 : sArmstrongs.Last () + 1;
+      for (int i = start; ; i++) {
+         if (sArmstrongs.Count > input) return sArmstrongs[input];
+         if (!sArmstrongs.Contains (i) && IsArmstrong (i)) sArmstrongs.Add (i);
       }
    }
 
    /// <summary>Checks wherether the given input number is an armstrong number or not</summary>
-   public static (bool, int) IsArmstrong (int num) {
+   public static bool IsArmstrong (int num) {
       int temp = num, sum = 0, d;
       int n = num.ToString ().Length;
       while (temp > 0) {
@@ -62,7 +61,7 @@ public class T18 {
          temp = (temp - d) / 10;
          sum += (int)Math.Pow (d, n);
       }
-      return (num == sum, sArmstrongs.IndexOf (num));
+      return num == sum;
    }
    static List<int> sArmstrongs = new ();
 }
