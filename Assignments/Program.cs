@@ -16,9 +16,13 @@ public class T17 {
       Console.WriteLine ("\x1B[4m" + "String Permutations Computer:-" + "\x1B[0m");
       List<string> words = new () { "or", "not", "tat", "abcd", "abca" };
       foreach (string word in words) PrintResult (word);
-      Console.WriteLine ();
-      Console.Write ("Now, let's try entering a word: ");
-      PrintResult (Console.ReadLine ());
+      GetUserInput: Console.Write ("\r\nNow, let's try entering a word: ");
+      string input = Console.ReadLine ();
+      if (input.Trim ().Length < 2) {
+         Console.WriteLine ("Please enter a string with a minimum length of 2.");
+         goto GetUserInput;
+      }
+      PrintResult (input);
    }
 
    /// <summary> Prints the permutated strings of given input word</summary>
@@ -36,7 +40,7 @@ public class T17 {
       }
    }
 
-   /// <summary>A recursive method which returns permutations of given input word</summary>
+   /// <summary>A recursive method which returns all the possible permutations of given input string of any length</summary>
    public static List<string> PermutationsOf (string input) {
       int n = input.Length;
       input = input.ToUpper ();
