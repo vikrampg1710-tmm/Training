@@ -36,28 +36,25 @@ public class T17 {
       }
    }
 
-   /// <summary>A recusive method which returns permutations of given input word</summary>
+   /// <summary>A recursive method which returns permutations of given input word</summary>
    public static List<string> PermutationsOf (string input) {
       int n = input.Length;
       input = input.ToUpper ();
       if (n == 2) return new () { $"{input[0]}{input[1]}", $"{input[1]}{input[0]}" };
       HashSet<string> output = new ();
-      List<string> store = new ();
+      List<string> temp = new ();
       List<char> chars = new ();
       for (int i = 0; i < n; i++) {
-         for (int j = 0, k = i; j < n - 1; j++, k++)
-            chars.Add (input[k % n]);
-         store.AddRange (PermutationsOf (new string (chars.ToArray ())));
+         for (int j = i; j < n - 1 + i; j++)
+            chars.Add (input[j % n]);
+         temp.AddRange (PermutationsOf (new string (chars.ToArray ())));
          chars.Clear ();
       }
       foreach (char c in input) {
-         foreach (string s in store) {
+         foreach (string s in temp) {
             string perm = c + s;
-            if (input.OrderBy (c => c).SequenceEqual (perm.OrderBy (c => c))) {
-               // This check is necessary to handle any input string with repeated characters in it.  Eg: "tat" (Here the char 't' is repeated).
-               // Therefore, when this condition passes we can say that [chars frequency of input word = chars frequency of permutated word].
+            if (input.OrderBy (c => c).SequenceEqual (perm.OrderBy (c => c)))
                output.Add (perm);
-            }
          }
       }
       return output.ToList ();
