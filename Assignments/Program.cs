@@ -16,16 +16,15 @@ public class T21 {
       int a = Convert.ToInt32 (Console.ReadLine ());
       Console.Write ("Enter Number, b = ");
       int b = Convert.ToInt32 (Console.ReadLine ());
-      (a, b) = Swap (a, b);
+      Swap (ref a, ref b);
       Console.WriteLine (value: $"\r\nAfter Swapping: \r\na = {a}\r\nb = {b}");
    }
 
    /// <summary>Swaps the given two numbers</summary>
-   public static (int, int) Swap (int a, int b) {
+   public static void Swap (ref int a, ref int b) {
       int temp = a;
       a = b; 
       b = temp;
-      return (a, b);
    }
 }
 
