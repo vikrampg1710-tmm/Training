@@ -14,7 +14,8 @@ namespace Spark;
 public class T23 {
    public static void Main () {
       Console.WriteLine ("\x1B[4m" + "Chocolate Wrappers Problem:-" + "\x1B[0m");
-      List<(int givenMoney, int priceOfChocolate, int reqWrappers)> testCases = new () { (15, 4, 3), (20, 3, 5), (100, 10, 4), (1, 1, 1), (0, 5, 1) };
+      List<(int givenMoney, int priceOfChocolate, int reqWrappers)> testCases = new () 
+         { (15, 4, 3), (20, 3, 5), (100, 10, 4), (1, 1, 1), (0, 5, 1) };
       for (int i = 0; i < testCases.Count; i++) {
          PrintInColor ($"\r\nTest Case - {i + 1}:", Yellow);
          PrintResult (testCases[i]);
@@ -28,30 +29,29 @@ public class T23 {
       PrintResult ((money, price, wrappersNeeded));
    }
 
-   /// <summary>Print the results in the console page</summary>
+   /// <summary>Prints the results in the console page</summary>
    public static void PrintResult ((int, int, int) input) {
+      Console.Write ("(Total money, Chocolate price, Wrappers needed) = ");
+      PrintInColor ($"({input.Item1}, {input.Item2}, {input.Item3})", Cyan);
       if (input.Item3 < 2) { PrintInColor ("Hypothetical input!", Red); return; }
       var (c, r, w) = ComputeResult (input.Item1, input.Item2, input.Item3);
-      Console.Write ("(Given money, Chocolate price, Wrapper needed) = ");
-      PrintInColor ($"({input.Item1}, {input.Item2}, {input.Item3})", Cyan);
-      Console.Write ("(No of Chocolates, Money left, Wrappers left)  = ");
+      Console.Write ("(No of Chocolates, Money left, Wrappers left)   = ");
       PrintInColor ($"({c}, {r}, {w})", Green);
    }
 
-   /// <summary>Returns the answer to the Chocolate Wrappers Problem</summary>
-   public static (int c, int r, int w) ComputeResult (int x, int p, int w) {
-      int nChocolates = 0, remPrice = 0, nWrappers = 0;
-      nChocolates += x / p;
-      remPrice += x % p;
-      nWrappers += nChocolates;
-
-      while (nWrappers >= w) {
-         int a = nWrappers / w;
-         nWrappers %= w;
-         nChocolates += a;
-         nWrappers += a;
+   /// <summary>Returns the maximum number of chocolates one can get, balance and the left over wrappers</summary>
+   public static (int cChocolates, int balance, int cWrappersLeft) ComputeResult (int amount, int price, int cWrappers) {
+      int cChocolates = 0, balance = 0, cWrappersLeft = 0;
+      cChocolates += amount / price;
+      balance += amount % price;
+      cWrappersLeft += cChocolates;
+      while (cWrappersLeft >= cWrappers) {
+         int a = cWrappersLeft / cWrappers;
+         cWrappersLeft %= cWrappers;
+         cChocolates += a;
+         cWrappersLeft += a;
       }
-      return (nChocolates, remPrice, nWrappers);
+      return (cChocolates, balance, cWrappersLeft);
    }
 
    /// <summary>Prints the given string in given foreground color</summary>
