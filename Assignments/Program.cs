@@ -7,6 +7,7 @@
 // ---------------------------------------------------------------------------------------
 
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using static System.ConsoleColor;
 
@@ -14,7 +15,7 @@ namespace Spark;
 
 public class T25 {
    public static void Main () {
-      Console.WriteLine ("\x1B[4m" + "Sorting & Swaping Special Characters:-" + "\x1B[0m");
+      Console.WriteLine ("\x1B[4m" + "Sorting & Swapping Special Characters:-" + "\x1B[0m");
       WriteInColor ("Test Case - 1:", Cyan);
       PrintResult (new char[] { 'a', 'b', 'c', 'a', 'c', 'b', 'd' }, 'a', false);
       WriteInColor ("Test Case - 2:", Cyan);
@@ -28,33 +29,28 @@ public class T25 {
    }
 
    /// <summary>Prints the result in the console page</summary>
-   public static void PrintResult (char[] array, char c, bool sortOrder = true) {
+   public static void PrintResult (char[] inputArray, char specialChar, bool sortOrder = true) {
       Console.Write ("Input char array   = ");
-      WriteInColor ("[ " + string.Join (", ", array) + " ]", Yellow);
+      WriteInColor ("[ " + string.Join (", ", inputArray) + " ]", Yellow);
       Console.Write ("Special Character  = ");
-      WriteInColor ($"{c}", Yellow);
+      WriteInColor ($"{specialChar}", Yellow);
       Console.Write ("Sort Order         = ");
       WriteInColor (sortOrder ? "Ascending" : "Descending", Yellow);
-      if (array.Length == 0) {
-         WriteInColor ("Invalid input!  Array is empty here", Red);
-         return;
-      }
-      var output = SpeicalSorted (array, c, sortOrder);
+      var output = SpecialSorted (inputArray, specialChar, sortOrder);
       Console.Write ($"Output char array  = ");
       WriteInColor ("[ " + string.Join (", ", output) + " ]", Green);
       Console.WriteLine ();
    }
 
    /// <summary>Returns a char array sorted in the given order with special char at last</summary>
-   public static char[] SpeicalSorted (char[] inputArray, char specialChar, bool sortOrder = true) {
-      int count = 0;
-      var list = inputArray.ToList ();
+   public static char[] SpecialSorted (char[] inputArray, char specialChar, bool sortOrder = true) {
+      if (inputArray.Length == 0) throw new Exception ("The input char array must not be empty.");
+      if (!(inputArray.All (char.IsAsciiLetterLower) || inputArray.Any (char.IsAsciiLetterUpper))) 
+         throw new Exception ("The items in the char array must be a alphabet letter");
+      if (!char.IsAsciiLetter (specialChar)) throw new Exception ("The special char must be a alphabet letter.");
+      List<char> list = inputArray.Where (a => a != specialChar).ToList ();
       list = sortOrder ? list.OrderBy (x => x).ToList () : list.OrderByDescending (x => x).ToList ();
-      while (list.Contains (specialChar)) {
-         list.Remove (specialChar);
-         count++;
-      }
-      for (int i = 0; i < count; i++) list.Add (specialChar);
+      list.AddRange (Enumerable.Repeat (specialChar, inputArray.Length - list.Count).ToList ());
       return list.ToArray ();
    }
 
