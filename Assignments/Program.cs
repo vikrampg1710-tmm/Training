@@ -7,6 +7,7 @@
 // ---------------------------------------------------------------------------------------
 
 using System;
+using System.Collections.Generic;
 using System.Linq;
 
 namespace Spark23;
@@ -28,9 +29,9 @@ public static class T26 {
       ///  [or] Sets the value to the specified index of the list</summary>
       public T this[int index] {
          get {
-            if (index < 0 || index >= mIndex) 
+            if (index < 0 || index >= mIndex)
                throw new IndexOutOfRangeException ("Index was out of range. Must be non-negative and less than the size of the collection.");
-            return mList[index]; 
+            return mList[index];
          }
          set {
             if (index < 0 || index >= mIndex)
@@ -48,21 +49,20 @@ public static class T26 {
       /// <summary>Removes the given item from the list</summary>
       public void Remove (T a) {
          if (!mList.Contains (a)) throw new InvalidOperationException ("Value not found in the list");
-         int index = Array.FindIndex (mList, x => x.Equals(a));
-         T tmp = mList[index + 1];
+         int index = 0;
+         for (int i = 0; i < mIndex; i++) {
+            if (mList[i].Equals (a)) index = i;
+         }
          for (int i = index; i < mIndex - 2; i++)
-            (mList[i], tmp) = (tmp, mList[i + 2]);
+            (mList[i], mList[index + 1]) = (mList[index + 1], mList[i + 2]);
          mIndex--;
          if (index == mIndex) return;
-         mList[mIndex - 1] = tmp;
+         mList[mIndex - 1] = mList[mIndex - 1];
       }
 
       /// <summary>Clears all the items present in the list</summary>
       public void Clear () {
-         if (mIndex != 0) {
-            Array.Resize (ref mList, 4);
-            mIndex = 0;
-         }
+         mIndex = 0;
       }
 
       /// <summary>Inserts a given item at the specified index value into the list</summary>
@@ -82,10 +82,10 @@ public static class T26 {
             throw new IndexOutOfRangeException ("Index was out of range. Must be non-negative and less than the size of the collection.");
          T tmp = mList[index + 1];
          for (int i = index; i < mIndex - 2; i++)
-            (mList[i], tmp) = (tmp, mList[i + 2]);
+            (mList[i], mList[index + 1]) = (mList[index + 1], mList[i + 2]);
          mIndex--;
          if (index == mIndex) return;
-         mList[mIndex - 1] = tmp;
+         mList[mIndex - 1] = mList[mIndex - 1];
       }
 
       T[] mList = new T[4]; // Array of size 4, which underlines the list data structure internally
