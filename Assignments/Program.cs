@@ -13,92 +13,82 @@ namespace Spark23;
 
 public static class T26 {
    public static void Main () {
-      var l = new MyList<int> ();
-      l.Add (1);
-      l.Remove (1);
-      l.Insert (0, 2);
-      l.RemoveAt (0);
-      l.Clear ();
-      Console.WriteLine (l.Count);
-      Console.WriteLine (l.Capacity);
-      for (int i = 11; i < 17; i++) l.Add (i);
-      Console.WriteLine (l.Count);
-      Console.WriteLine (l.Capacity);
+      MyList<int> list = new ();
    }
 
    /// <summary>Custom class of generic type list/> 
    public class MyList<T> {
       /// <summary>Returns the number of items present in the list</summary>
-      public int Count { get => mIndex; }
+      public int Count => mIndex;
 
       /// <summary>Returns the capacity of the list</summary>
-      public int Capacity { get => list.Length; }
-      public T this[int index] { 
-         get => list[index]; 
-         set => list[index] = value; 
+      public int Capacity => mList.Length;
+
+      /// <summary>Property: Gets the value of specified index from the list 
+      ///  [or] Sets the value to the specified index of the list</summary>
+      public T this[int index] {
+         get {
+            if (index < 0 || index >= mIndex) 
+               throw new IndexOutOfRangeException ("Index was out of range. Must be non-negative and less than the size of the collection.");
+            return mList[index]; 
+         }
+         set {
+            if (index < 0 || index >= mIndex)
+               throw new IndexOutOfRangeException ("Index was out of range. Must be non-negative and less than the size of the collection.");
+            mList[index] = value;
+         }
       }
 
       /// <summary>Adds an given item to the end of the list</summary>
       public void Add (T a) {
-         if (mIndex == list.Length) {
-            var temp = new T[mIndex * 2];
-            for (int i = 0; i < mIndex; i++) temp[i] = list[i];
-            list = temp;
-         }
-         list[mIndex++] = a;
+         if (mIndex == mList.Length) Array.Resize (ref mList, mIndex * 2);
+         mList[mIndex++] = a;
       }
 
       /// <summary>Removes the given item from the list</summary>
       public void Remove (T a) {
-         if (!list.Contains (a)) throw new InvalidOperationException ("Value not found in the list");
-         int pos = Array.FindIndex (list, x => x.Equals(a));
-         var dummy = new T[mIndex - pos];
-         for (int i = pos + 1, x = 0; i < mIndex; i++, x++) 
-            dummy[x] = list[i];
+         if (!mList.Contains (a)) throw new InvalidOperationException ("Value not found in the list");
+         int index = Array.FindIndex (mList, x => x.Equals(a));
+         T tmp = mList[index + 1];
+         for (int i = index; i < mIndex - 2; i++)
+            (mList[i], tmp) = (tmp, mList[i + 2]);
          mIndex--;
-         for (int i = pos, x = 0; i < mIndex; i++, x++) 
-            list[i] = dummy[x];
+         if (index == mIndex) return;
+         mList[mIndex - 1] = tmp;
       }
 
       /// <summary>Clears all the items present in the list</summary>
       public void Clear () {
          if (mIndex != 0) {
-            list = new T[4];
+            Array.Resize (ref mList, 4);
             mIndex = 0;
          }
       }
 
       /// <summary>Inserts a given item at the specified index value into the list</summary>
       public void Insert (int index, T a) {
-         if (index < 0) throw new IndexOutOfRangeException ("Invalid index range");
-         if (index > mIndex) throw new IndexOutOfRangeException ("Index out of range");
-         if (mIndex == list.Length) {
-            var temp = new T[mIndex * 2];
-            for (int i = 0; i < mIndex; i++) temp[i] = list[i];
-            list = temp;
-         }
-         var dummy = new T[mIndex - index];
-         for (int i = index, x = 0; i < mIndex; i++, x++) 
-            dummy[x] = list[i];  // Simply, dummy = list[list[index]..]
-         list[index] = a;
-         for (int i = index + 1, x = 0; i < dummy.Length; i++, x++) 
-            list[i] = dummy[x];
-         mIndex++;
+         if (index < 0 || index > mIndex)
+            throw new IndexOutOfRangeException ("Index was out of range. Must be non-negative and less than the size of the collection.");
+         if (mIndex == mList.Length) Array.Resize (ref mList, mIndex * 2);
+         var (t1, t2) = (a, mList[index]);
+         for (int i = index; i < mIndex; i++)
+            (mList[i], t1, t2) = (t1, t2, mList[(i + 1) % mIndex]);
+         mList[mIndex++] = t1;
       }
 
       /// <summary>Removes the item located at the given index value</summary>
       public void RemoveAt (int index) {
-         if (index < 0) throw new IndexOutOfRangeException ("Invalid index range");
-         if (index >= mIndex) throw new IndexOutOfRangeException ("Index out of range");
-         var dummy = new T[mIndex - index - 1];
-         for (int i = index + 1, x = 0; i < mIndex; i++, x++) 
-            dummy[x] = list[i];
-         for (int i = index, x = 0; i < dummy.Length; i++, x++) 
-            list[i] = dummy[x];
+         if (index < 0 || index >= mIndex)
+            throw new IndexOutOfRangeException ("Index was out of range. Must be non-negative and less than the size of the collection.");
+         T tmp = mList[index + 1];
+         for (int i = index; i < mIndex - 2; i++)
+            (mList[i], tmp) = (tmp, mList[i + 2]);
          mIndex--;
+         if (index == mIndex) return;
+         mList[mIndex - 1] = tmp;
       }
 
-      T[] list = new T[4]; // Array of size 4, which underlines the list data structure internally
+      T[] mList = new T[4]; // Array of size 4, which underlines the list data structure internally
       int mIndex = 0; // Initial index value
    }
 }
