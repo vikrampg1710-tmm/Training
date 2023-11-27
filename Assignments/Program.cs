@@ -7,7 +7,6 @@
 // ---------------------------------------------------------------------------------------
 
 using System;
-using System.Collections.Generic;
 using System.Linq;
 using static System.ConsoleColor;
 
@@ -45,13 +44,11 @@ public class T25 {
    /// <summary>Returns a char array sorted in the given order with special char at last</summary>
    public static char[] SpecialSorted (char[] inputArray, char specialChar, bool sortOrder = true) {
       if (inputArray.Length == 0) throw new Exception ("The input char array must not be empty.");
-      if (!(inputArray.All (char.IsAsciiLetterLower) || inputArray.Any (char.IsAsciiLetterUpper))) 
-         throw new Exception ("The items in the char array must be a alphabet letter");
+      if (!inputArray.All (char.IsAsciiLetter)) throw new Exception ("The items in the char array must be a alphabet letter");
       if (!char.IsAsciiLetter (specialChar)) throw new Exception ("The special char must be a alphabet letter.");
-      List<char> list = inputArray.Where (a => a != specialChar).ToList ();
-      list = sortOrder ? list.OrderBy (x => x).ToList () : list.OrderByDescending (x => x).ToList ();
-      list.AddRange (Enumerable.Repeat (specialChar, inputArray.Length - list.Count).ToList ());
-      return list.ToArray ();
+      var list = inputArray.Where (a => a != specialChar);
+      list = sortOrder ? list.OrderBy (x => x) : list.OrderByDescending (x => x);
+      return list.Concat (Enumerable.Repeat (specialChar, inputArray.Length - list.Count ())).ToArray ();
    }
 
    /// <summary>Writes the given string in given foreground color</summary>

@@ -29,14 +29,10 @@ public class UnitTest1 {
    // Test 4: Output array should be sorted as per given order, excluding the special chars at last
    public void TestMethod4 () {
       var t25 = new T25();
-      char[] input = new char[10],
+      char[] input = new char[] { 't', 'r', 'U', 'm', 'P', 'M', 'E', 't', 'a', 'm', 'A', 'T', 'I', 'o', 'N' },
             output = new char[10];
       Random random = new ();
-      for (int i = 0; i < 10; i++) {
-         int r = random.Next (0, 26);
-         input[i] = (char)(i % 2 == 0 ? 'a' + r : 'A' + r);
-      }
-      char specialChar = input[random.Next (0, 10)];
+      char specialChar = 'm';
       bool sortOrder = random.Next (0, 2) == 1;
       input = sortOrder ? input.OrderBy (x => x).ToArray () : input.OrderByDescending (x => x).ToArray ();
       output = T25.SpecialSorted (input.ToArray (), specialChar, sortOrder);
@@ -48,13 +44,8 @@ public class UnitTest1 {
    // Test 5: The count of special character in the input array should be equal to the count in the output array
    public void TestMethod5 () {
       var t25 = new T25 ();
-      List<char> input = new ();
-      Random random = new Random ();
-      for (int i = 0; i < 10; i++) {
-         int r = random.Next (0, 26);
-         input.Add ((char)(i % 2 == 0 ? 'a' + r : 'A' + r));
-      }
-      char specialChar = input[random.Next (0, 10)];
+      char[] input = new char[] { 't', 'r', 'U', 'm', 'P', 'M', 'E', 't', 'a', 'm', 'A', 'T', 'I', 'o', 'N' };
+      char specialChar = 'T';
       var output = T25.SpecialSorted (input.ToArray (), specialChar);
       Assert.AreEqual (input.Count (c => c == char.ToLower(specialChar) || c == char.ToUpper (specialChar)), 
          output.Count (c => c == char.ToLower (specialChar) || c == char.ToUpper (specialChar))) ;
@@ -64,13 +55,8 @@ public class UnitTest1 {
    // Test 6: All the special characters should be placed at the end of the output array
    public void TestMethod6 () {
       var t25 = new T25 ();
-      List<char> input = new ();
-      Random random = new Random ();
-      for (int i = 0; i < 10; i++) {
-         int r = random.Next (0, 8);
-         input.Add ((char)(i % 2 == 0 ? 'a' + r : 'A' + r));
-      }
-      char specialChar = input[random.Next (0, 10)];
+      char[] input = new char[] { 't', 'r', 'U', 'm', 'P', 'M', 'E', 't', 'a', 'm', 'A', 'T', 'I', 'o', 'N' };
+      char specialChar = 'r';
       int n = input.Count (c => c == specialChar);
       var output = T25.SpecialSorted (input.ToArray (), specialChar);
       Assert.AreEqual (Array.IndexOf (output, specialChar), output.Length - n);
