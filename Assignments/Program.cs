@@ -7,7 +7,6 @@
 // ---------------------------------------------------------------------------------------
 
 using System;
-using System.Collections.Generic;
 using System.Linq;
 
 namespace Spark23;
@@ -42,7 +41,8 @@ public static class T26 {
 
       /// <summary>Adds an given item to the end of the list</summary>
       public void Add (T a) {
-         if (mIndex == mList.Length) Array.Resize (ref mList, mIndex * 2);
+         if (mIndex == mList.Length) 
+            Array.Resize (ref mList, mIndex * 2);
          mList[mIndex++] = a;
       }
 
@@ -53,11 +53,9 @@ public static class T26 {
          for (int i = 0; i < mIndex; i++) {
             if (mList[i].Equals (a)) index = i;
          }
-         for (int i = index; i < mIndex - 2; i++)
-            (mList[i], mList[index + 1]) = (mList[index + 1], mList[i + 2]);
+         for (int i = index; i < mIndex - 1; i++)
+            (mList[i], mList[i + 1]) = (mList[i + 1], mList[i]);
          mIndex--;
-         if (index == mIndex) return;
-         mList[mIndex - 1] = mList[mIndex - 1];
       }
 
       /// <summary>Clears all the items present in the list</summary>
@@ -69,26 +67,23 @@ public static class T26 {
       public void Insert (int index, T a) {
          if (index < 0 || index > mIndex)
             throw new IndexOutOfRangeException ("Index was out of range. Must be non-negative and less than the size of the collection.");
-         if (mIndex == mList.Length) Array.Resize (ref mList, mIndex * 2);
-         var (t1, t2) = (a, mList[index]);
-         for (int i = index; i < mIndex; i++)
-            (mList[i], t1, t2) = (t1, t2, mList[(i + 1) % mIndex]);
-         mList[mIndex++] = t1;
+         if (mIndex == mList.Length) 
+            Array.Resize (ref mList, mIndex * 2);
+         mList[mIndex++] = a;
+         for (int i = mIndex - 1; i > index; i--)
+            (mList[i], mList[i - 1]) = (mList[i - 1], mList[i]);
       }
 
       /// <summary>Removes the item located at the given index value</summary>
       public void RemoveAt (int index) {
          if (index < 0 || index >= mIndex)
             throw new IndexOutOfRangeException ("Index was out of range. Must be non-negative and less than the size of the collection.");
-         T tmp = mList[index + 1];
-         for (int i = index; i < mIndex - 2; i++)
-            (mList[i], mList[index + 1]) = (mList[index + 1], mList[i + 2]);
+         for (int i = index; i < mIndex - 1; i++)
+            (mList[i], mList[i + 1]) = (mList[i + 1], mList[i]);
          mIndex--;
-         if (index == mIndex) return;
-         mList[mIndex - 1] = mList[mIndex - 1];
       }
 
       T[] mList = new T[4]; // Array of size 4, which underlines the list data structure internally
-      int mIndex = 0; // Initial index value
+      int mIndex;
    }
 }
