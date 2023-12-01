@@ -7,190 +7,117 @@
 // ---------------------------------------------------------------------------------------
 
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading;
 
 namespace Academy;
 public class A10 {
    public static void Main () {
-      TDoubleEndedQueue<int> q = new ();
-      List<char> Letters = new ();
-      for (char c = 'A'; c <= 'Z'; c++) Letters.Add (c);
-      Console.WriteLine ("This is the program to perform DOUBLE-ENDED QUEUE.\n\nInitially declaring a array of size 4 as below:"); // User Guidelines:
-      for (int i = 0; i <= 4; i++) Console.Write (i == 4 ? "┐\n" : (i == 0 ? "┌───" : "┬───"));   // HEADER:
-      for (int i = 0; i <= 4; i++) Console.Write (i == 4 ? "│\n" : $"│   ");                      // MIDDLE:
-      for (int i = 0; i <= 4; i++) Console.Write (i == 4 ? "┘\n\n" : (i == 0 ? "└───" : "┴───")); // FOOTER:
-      Console.WriteLine ("INSTRUCTIONS:\n1. To FRONT Enqueue      --> TYPE 'f' as prefix to your input.  Eg: To enqueue '1', TYPE as f1.\n"
-          + "2. To BACK/REAR Enqueue  --> TYPE 'b' [or] 'r' as prefix to your input.  Eg: To enqueue '1', TYPE as b1 [or] r1.\n"
-          + "3. To FRONT Dequeue      --> TYPE capital F.\n"
-          + "4. To BACK/REAR Dequeue  --> TYPE capital B or R.\n3. Do not use '0' as a enqueuing element.\n"
-          + "5. To EXIT, TYPE the word 'Exit'\n\n");
-      Console.WriteLine ("Give your input:-"); // Getting User input.
-      for (; ; ) {
-         Console.Write (">>> ");
-         string a = Console.ReadLine ();
-         if (a != null && a.Trim ().Length != 0) {
-            if (a[0] == 'f' && a.Length != 1 && !Letters.Any (a[1..].ToUpper ().Contains)) q.FrontEnqueue (Convert.ToInt32 (a[1..]));
-            else if (a[0] == 'b' || a[0] == 'r' && a.Length != 1) q.BackEnqueue (Convert.ToInt32 (a[1..]));
-            else if (a[0] == 'F' && a.Length == 1) q.FrontDequeue ();
-            else if (a[0] == 'B' || a[0] == 'R' && a.Length == 1) q.BackDequeue ();
-            else if (a.ToUpper () == "EXIT") { q.Terminate (); break; } else {
-               Console.ForegroundColor = ConsoleColor.Red;
-               Console.WriteLine ("Incorrect input!\n");
-               Console.ResetColor ();
-               continue;
-            }
-         }
-      }
+      TDoubleEndedQueue<int> queue = new ();
+      queue.FrontEnqueue (1);
+      queue.BackEnqueue (2);
+      queue.FrontDequeue ();
+      queue.BackDequeue ();
    }
 
-   // Generic Double Ended Queue Class:
+   /// <summary>
+   /// Initializes a new instance of the TDoubleEndedQueue<typeparamref name="T"/> class that is empty, has the default initial capacity, and uses the default growth factor.
+   /// </summary>
+   /// <typeparam name="T"></typeparam>
    public class TDoubleEndedQueue<T> {
 
+      #region Fields:
       readonly T b;// Value of unassigned slot in array.
-      T[] Data = new T[4];
-      int Count;   // Count of elements in the Queue
-      int Front;   // Index of the Front position in queue
-      int Back;    // Index of the Back position in queue
-      public int EnqueueCount;  // Index to count no. of enqueue operations.
-      int DequeueCount;  // Index to count no. of dequeue operations.
+      T[] mData = new T[4];
+      int mCount;
+      int mFront;
+      int mBack;
+      #endregion
 
-      // Front Enqueue Function:
-      public void FrontEnqueue (T a) {
-         if (Count == Data.Length) {
-            Console.ForegroundColor = ConsoleColor.Green;
-            Console.WriteLine ("Queue Overflow! Hence, Scaling-up array.");
-            Console.ResetColor ();
-            T[] tmp = new T[Data.Length * 2];
-            for (int i = 0; i < Data.Length; i++)
-               tmp[i] = Data[(Front + 1 + i) % Data.Length];
-            (Data, Back) = (tmp, Count - 1);
-            Front = Data.Length - 1;
+      #region Properties:
+      /// <summary> Returns true if the <see cref="TDoubleEndedQueue{T}"></see> has no elements in it. </summary>
+      public bool IsEmpty => mCount == 0;
+
+      /// <summary> Gets the number of elements contained in the <see cref="TDoubleEndedQueue{T}"></see>. </summary>
+      public int Count => mCount;
+      #endregion
+
+      #region Methods:
+      /// <summary>
+      /// Removes and returns the object at the end of the<see cref="TDoubleEndedQueue{T}"></see>
+      /// </summary>
+      /// <returns>Returns the object at the end of the <see cref="TDoubleEndedQueue{T}"></see>after removing it</returns>
+      /// <exception cref="InvalidOperationException"></exception>
+      public T BackDequeue () {
+         if (IsEmpty) throw new InvalidOperationException ("Queue is empty, can't dequeue.");
+         T a = mData[mBack];
+         mBack = (mBack - 1) % mData.Length;
+         if (mBack < 0) mBack += mData.Length;
+         mCount--;
+         if (mCount < mData.Length / 2 && mData.Length > 4) {
+            T[] tmp = new T[mData.Length / 2];
+            for (int i = 0; i < mCount; i++)
+               tmp[i] = mData[(mFront + 1 + i) % mData.Length];
+            (mData, mBack) = (tmp, mCount - 1);
+            mFront = mData.Length - 1;
          }
-         Data[Front] = a;
-         Front = (Front - 1) % Data.Length;
-         if (Front < 0) Front += Data.Length;
-         Count++; EnqueueCount++;
-         DisplayElements (Data);
-         Console.WriteLine ();
+         return a;
       }
 
-      // Back Enqueue Function:
+      /// <summary>
+      /// Adds an object to the end of the <see cref="TDoubleEndedQueue{T}"></see>
+      /// </summary>
+      /// <param name="a"></param>
       public void BackEnqueue (T a) {
-
-         if (Count == Data.Length) {
-            Console.ForegroundColor = ConsoleColor.Green;
-            Console.WriteLine ("Queue Overflow! Hence, Scaling-up array.");
-            Console.ResetColor ();
-            T[] tmp = new T[Count * 2];
-            for (int i = 0; i < Count; i++)
-               tmp[i] = Data[(Back + 1 + i) % Count];
-            (Data, Back) = (tmp, Count - 1);
-            Front = Data.Length - 1;
+         if (mCount == mData.Length) {
+            T[] tmp = new T[mCount * 2];
+            for (int i = 0; i < mCount; i++)
+               tmp[i] = mData[(mBack + 1 + i) % mCount];
+            (mData, mBack) = (tmp, mCount - 1);
+            mFront = mData.Length - 1;
          }
-         if (IsEmpty) Back--;
-         Back = (Back + 1) % Data.Length;
-         Data[Back] = a;
-         Count++; EnqueueCount++;
-         DisplayElements (Data);
-         Console.WriteLine ();
+         if (IsEmpty) mBack--;
+         mBack = (mBack + 1) % mData.Length;
+         mData[mBack] = a;
+         mCount++;
       }
 
-      // Front Dequeue Function:
-      public void FrontDequeue () {
-         if (IsEmpty) {
-            Console.ForegroundColor = ConsoleColor.Red;
-            Console.WriteLine ("Queue Empty!");
-            Console.ResetColor ();
-            DisplayElements (Data);
-            Console.WriteLine ();
-         } else {
-            Front = (Front + 1) % Data.Length;
-            T a = Data[Front];
-            Data[Front] = b;
-            if (!IsEmpty) {
-               Console.ForegroundColor = ConsoleColor.Blue;
-               Console.WriteLine ($"Dequeuing {a}");
-               Console.ResetColor ();
-            }
-            Count--; DequeueCount++;
-            if (Count < Data.Length / 2 && Data.Length > 4) {
-               Console.ForegroundColor = ConsoleColor.Green;
-               Console.WriteLine ("Queue is half empty! Hence, Scaling-down array.");
-               Console.ResetColor ();
-               T[] tmp = new T[Data.Length / 2];
-               for (int i = 0; i < Count; i++)
-                  tmp[i] = Data[(Front + 1 + i) % Data.Length];
-               (Data, Back) = (tmp, Count - 1);
-               Front = Data.Length - 1;
-            }
-            DisplayElements (Data);
-            Console.WriteLine ();
+      /// <summary>
+      /// Removes and returns the object at the beginning of the <see cref="TDoubleEndedQueue{T}"></see>
+      /// </summary>
+      /// <return>Returns the object at the beginning of the <see cref="TDoubleEndedQueue{T}"></see>after removing it</return>
+      /// <exception cref="InvalidOperationException"></exception>
+      public T FrontDequeue () {
+         if (IsEmpty) throw new InvalidOperationException ("Queue is empty, can't dequeue.");
+         mFront = (mFront + 1) % mData.Length;
+         T a = mData[mFront];
+         mCount--;
+         if (mCount < mData.Length / 2 && mData.Length > 4) {
+            T[] tmp = new T[mData.Length / 2];
+            for (int i = 0; i < mCount; i++)
+               tmp[i] = mData[(mFront + 1 + i) % mData.Length];
+            (mData, mBack) = (tmp, mCount - 1);
+            mFront = mData.Length - 1;
          }
+         return a;
       }
 
-      // Back Dequeue Function:
-      public void BackDequeue () {
-         if (IsEmpty) {
-            Console.ForegroundColor = ConsoleColor.Red;
-            Console.WriteLine ("Queue Empty!");
-            Console.ResetColor ();
-            DisplayElements (Data);
-            Console.WriteLine ();
-         } else {
-            T a = Data[Back];
-            Data[Back] = b;
-            Back = (Back - 1) % Data.Length;
-            if (Back < 0) Back += Data.Length;
-            if (!IsEmpty) {
-               Console.ForegroundColor = ConsoleColor.Blue;
-               Console.WriteLine ($"Dequeuing {a}");
-               Console.ResetColor ();
-            }
-            Count--; DequeueCount++;
-            if (Count < Data.Length / 2 && Data.Length > 4) {
-               Console.ForegroundColor = ConsoleColor.Green;
-               Console.WriteLine ("Queue is half empty! Hence, Scaling-down array.");
-               Console.ResetColor ();
-               T[] tmp = new T[Data.Length / 2];
-               for (int i = 0; i < Count; i++)
-                  tmp[i] = Data[(Front + 1 + i) % Data.Length];
-               (Data, Back) = (tmp, Count - 1);
-               Front = Data.Length - 1;
-            }
-            DisplayElements (Data);
-            Console.WriteLine ();
+      /// <summary>
+      /// Adds an object to the beginning of the <see cref="TDoubleEndedQueue{T}"></see>
+      /// </summary>
+      /// <param name="a"></param>
+      public void FrontEnqueue (T a) {
+         if (mCount == mData.Length) {
+            T[] tmp = new T[mData.Length * 2];
+            for (int i = 0; i < mData.Length; i++)
+               tmp[i] = mData[(mFront + 1 + i) % mData.Length];
+            (mData, mBack) = (tmp, mCount - 1);
+            mFront = mData.Length - 1;
          }
+         mData[mFront] = a;
+         mFront = (mFront - 1) % mData.Length;
+         if (mFront < 0) mFront += mData.Length;
+         mCount++;
       }
-      public bool IsEmpty => Count == 0; // Bool function to check whether array is empty or not.
-
-      // Function to Display array using Unicode
-      public void DisplayElements (T[] a) {
-         for (int i = 0; i <= a.Length; i++) 
-            Console.Write (i == a.Length ? "┐\n" : (i == 0 ? $"┌──{Align ("─", StringOf (a[i]))}" : $"┬──{Align ("─", StringOf (a[i]))}")); // HEADER
-         for (int i = 0; i <= a.Length; i++) 
-            Console.Write (i == a.Length ? "│\n" : $"│ {StringOf (a[i])} ");                                                                // MIDDLE
-         for (int i = 0; i <= a.Length; i++) 
-            Console.Write (i == a.Length ? "┘\n" : (i == 0 ? $"└──{Align ("─", StringOf (a[i]))}" : $"┴──{Align ("─", StringOf (a[i]))}")); // FOOTER
-
-         // Local Function to return space or array element as string.
-         string StringOf (T s)
-           => Equals (s, b) ? " " : s.ToString ();
-
-         // Local Function for aligning the box sizes according to the filler.
-         string Align (string s1, string s2)
-            => string.Concat (Enumerable.Repeat (s1, s2.Length));
-      }
-
-      // Function to Display texts after user terminated the program.
-      public void Terminate () {
-         Thread.Sleep (1000);
-         Console.ForegroundColor = ConsoleColor.Red;
-         Console.WriteLine ("PROGRAM TERMINATED!\n");
-         Console.ResetColor ();
-         Console.WriteLine ($"So far, you have performed {EnqueueCount} Enqueue operations & {DequeueCount} Dequeue operations.\n==> Totally {EnqueueCount + DequeueCount} Enqueue-Dequeue operations.");
-      }
+      #endregion 
    }
 }
 
