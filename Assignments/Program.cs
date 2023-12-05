@@ -1,5 +1,5 @@
 ﻿// ---------------------------------------------------------------------------------------
-// Spark23 Assignments
+// Academy23 Assignments
 // Copyright (c) Metamation India.
 // ---------------------------------------------------------------------------------------
 // Program.cs
@@ -11,138 +11,68 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
-using System.Threading;
 
-namespace Spark;
-public class T16 {
+namespace Academy;
+public class A3 {
    public static void Main () {
       Console.OutputEncoding = Encoding.Unicode;
       Console.WriteLine ("----------------------------------------------------------------------------------------------------------\n"
-      + " A.03.P01 - Spelling Bee Cheat Code.\n"
-      + " ◌ Spelling Bee is a game in which we have to find possible words from given 7 letters, among 1 is a compulsory letter.\n"
-      + " ◌ A word should atleast contain 4 letters, which scores 1 point. Further, n letter word scores n points.\n"
-      + " ◌ If a word contains all the given 7 letters called as PANGRAM, which score additional 7 points.\n"
-      + "----------------------------------------------------------------------------------------------------------\n\n");
+      + " Spelling Bee:-\r\n"
+      + " ◌ Spelling Bee is a game in which we have to find possible words from given 7 letters, among 1 is a compulsory letter.\r\n"
+      + " ◌ A word should atleast contain 4 letters, which scores 1 point. Further, N letter word scores N points.\r\n"
+      + " ◌ If a word contains all the given 7 letters called as PANGRAM, which score additional 7 points.\r\n"
+      + "----------------------------------------------------------------------------------------------------------\r\n");
+      List<char> input = new () { 'U', 'X', 'A', 'T', 'L', 'N', 'E' };
+      Console.Write ("(1) Input the 7 letters  [or]\r\n" +
+         "(2) See the results of default input letters: [ 'U', X, A, T, L, N, E ]\r\n" +
+         "Press 1 or 2: ");
+      if (Console.ReadKey ().KeyChar == '1') GetInput (ref input);
+      Console.WriteLine ();
+      PrintScore (input);
 
+      ///<summary>Gets the 7 letters as input from user</summary>
+      static List<char> GetInput (ref List<char> input) {
+         input.Clear ();
+         Console.WriteLine ("\r\n(Note: Letter 1 is the compulsory letter.)");
+         GetAgain: Console.Write ($"Enter letter {input.Count + 1}: ");
+         char letter = char.ToUpper (Console.ReadLine ()[0]);
+         if (char.IsLetter (letter) && !input.Contains (letter)) input.Add (letter);
+         else Console.WriteLine (" --> Invalid input!");
+         if (input.Count < 7) goto GetAgain;
+         return input;
+      }
 
-      // Getting 7 input letters from user.
-      List<char> targetLetters = new () { 'U', 'X', 'A', 'T', 'L', 'N', 'E' };
-      Console.Write ("Do you want to input 7 letters? ");
-      for (; ; ) {
-         Console.Write ("(Y)es/(N)o? : ");
-         char choice = Char.ToUpper (Console.ReadKey ().KeyChar);
-         Console.WriteLine ();
-         if (choice == 'Y') {
-            Console.WriteLine ("\nThen, Enter 7 different alphabet letters:-");
-            targetLetters.Clear ();
-            for (int i = 1; i <= 7;) {
-               Console.Write ($"Enter letter {i}: ");
-               char letter = Char.ToUpper (Console.ReadKey ().KeyChar);
-               Console.WriteLine ();
-               if (Char.IsLetter (letter)) {
-                  if (!targetLetters.Contains (letter)) {
-                     targetLetters.Add (letter);
-                     i++;
-                  } else {
-                     Console.ForegroundColor = ConsoleColor.Cyan;
-                     Console.WriteLine ("Please enter a different letter\n");
-                     Console.ResetColor ();
-                     continue;
-                  }
-               } else {
-                  Console.ForegroundColor = ConsoleColor.Red;
-                  Console.WriteLine ("Incorrect input!  Please enter a letter.\n");
-                  Console.ResetColor ();
-               }
-            }
-            break;
-         } else if (choice == 'N') {
-            Console.WriteLine ("\nOkay! Here is the default 7 letters: U, X, A, T, L, N, E.\nPress ENTER to display the answers");
-            Console.ReadLine ();
-            break;
-         } else {
-            Console.ForegroundColor = ConsoleColor.Red;
-            Console.WriteLine ("Incorrect answer.  Enter 'Y' for YES | 'N' for NO.");
+      ///<summary>Prints the output results in the console page</summary>
+      static void PrintScore (List<char> input) {
+         Console.WriteLine ("\r\n#Possible words with score in the prefix (Pangram words are displayed in GREEN):");
+         string[] dictWords = File.ReadAllLines (@"c:/etc/words.txt");
+         Dictionary<string, int> answer = new ();
+         foreach (var word in dictWords)
+            if (IsValid (word)) answer.Add (word, ScoreOf (word));
+         foreach (var item in answer.OrderByDescending (a => a.Value)) {
+            if (IsPangram (item.Key)) Console.ForegroundColor = ConsoleColor.Green;
+            Console.WriteLine ($"{item.Value,3}. {item.Key}");
             Console.ResetColor ();
          }
-      }
+         Console.WriteLine ($"----\r\n{answer.Sum (x => x.Value)} => Total Score");
 
-      string head = "These are the possible words, with score in prefix:\n(Pangram words are displayed in GREEN)\n";
-      foreach (char i in head) {
-         Console.Write (i == ')' ? i + "\n" : i);
-         Thread.Sleep (20);
-      }
-
-      // Creating a separate list to store non-given letters.
-      List<char> remLetters = new ();
-      for (char c = 'A'; c <= 'Z'; c++) {
-         if (targetLetters.Contains (c)) continue;
-         else remLetters.Add (c);
-      }
-
-      // Adding all valid words from dictionary file to a separate list called validWords.
-      List<string> validWords = new ();
-      string[] discWords = File.ReadAllLines (@"c:/etc/words.txt");
-      foreach (var word in discWords)
-         if (IsValid (word)) validWords.Add (word);
-
-      // Ordering dictionary elements based on score of each words (High to Low). 
-      Dictionary<string, int> Answer = new ();
-      foreach (string word in validWords)
-         Answer.Add (word, calcScore (word));
-      var sortedDict = Answer.OrderByDescending (a => a.Value);
-
-      // Making the pangram word to display in green color.
-      int count = 0;
-      foreach (KeyValuePair<string, int> abc in sortedDict) {
-         if (IsPangram (abc.Key)) {
-            count++;
-            Console.ForegroundColor = ConsoleColor.Green;
-            Thread.Sleep (100);
-            Console.WriteLine ($"{abc.Value,3}. {abc.Key}");
-            Console.ResetColor ();
+         ///<summary>Returns true only if the given word is valid as per spelling bee game rules</summary>
+         bool IsValid (string word) {
+            if (word.Length <= 3) return false;
+            else if (!word.Contains (input[0])) return false;
+            return word.All (input.Contains);
          }
-      }
 
-      // Printing all Answers score-wise & alphabetically.
-      foreach (KeyValuePair<string, int> abc in sortedDict) {
-         if (!IsPangram (abc.Key)) {
-            Thread.Sleep (100);
-            Console.WriteLine ($"{abc.Value,3}. {abc.Key}");
+         ///<summary>Returns the score of given word</summary>
+         int ScoreOf (string word) {
+            if (word.Length == 4) return 1;
+            else if (IsPangram (word)) return word.Length + 7;
+            return word.Length;
          }
-      }
 
-      // Printing Total score and No. of Pangram words.
-      Console.WriteLine ($"----\nTotal Score = {sortedDict.Sum (x => x.Value)}"
-      + $"\nNumber of Pangram words: {count}.");
-
-      //---------Main program OVER.  Below are the methods used.--------------//
-      // Filtering conditions of words:
-      bool IsValid (string word) {
-         if (word.Length <= 3) return false; // To remove all words having length less than 4.
-         foreach (char c in remLetters)  // To remove all words having non target letters.
-            if (word.Contains (c)) { return false; } else if (!word.Contains (targetLetters[0])) { return false; } // To remove all words that not having center letter, in this case 'U'.
-         return true;
-      }
-
-      // Calculating Score:
-      int calcScore (string word) {
-         if (word.Length == 4) return 1;
-         else if (IsPangram (word)) return word.Length + 7;
-         else return word.Length;
-      }
-
-      // Checking for Pangram:
-      bool IsPangram (string word) {
-         foreach (char c1 in targetLetters) {
-            bool present = false;
-            foreach (char c2 in word)
-               if (c2 == c1) { present = true; break; }
-            if (!present) return false;
-         }
-         return true;
+         ///<summary>Returns true if the given word is a pangram</summary>
+         bool IsPangram (string word)
+            => input.All (word.Contains);
       }
    }
 }
-
-
