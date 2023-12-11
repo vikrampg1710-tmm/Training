@@ -17,19 +17,23 @@ public class T28 {
       queue.Peek ();
    }
 
-   #region TQueue Class
+   #region TQueue Class ---------------------------------------------------------------------------
    /// <summary>
    /// Initiates a new instance of the TQueue class that is empty, and has the default initial capacity, and uses the default growth factor
    /// </summary>
    /// <typeparam name="T"></typeparam>
    public class TQueue<T> {
 
-      #region Properties:
+      #region Properties --------------------------------------------
+      T[] mData = new T[4];
+      int mCount;
+      int mFront;
+      int mBack;
       public int Count => mCount;
       public bool IsEmpty => mCount == 0;
       #endregion
 
-      #region Methods:
+      #region Methods -----------------------------------------------
       /// <summary>Removes and returns the object at the beginning of the TQueue</summary>
       /// <returns>The object that is removed from the beginning of the TQueue</returns>
       /// <param name="a"></param>
@@ -70,13 +74,6 @@ public class T28 {
          if (IsEmpty) throw new InvalidOperationException ("Queue is empty");
          return mData[mFront];
       }
-      #endregion
-
-      #region Fields
-      T[] mData = new T[4];
-      int mCount;
-      int mFront;
-      int mBack;
       #endregion
    }
    #endregion
