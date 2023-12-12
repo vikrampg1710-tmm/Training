@@ -18,21 +18,18 @@ public class A10 {
       queue.BackDequeue ();
    }
 
+   #region DoubleEndedQueue Class -----------------------------------------------------------------
    /// <summary>
    /// Initializes a new instance of the TDoubleEndedQueue<typeparamref name="T"/> class that is empty, has the default initial capacity, and uses the default growth factor.
    /// </summary>
    /// <typeparam name="T"></typeparam>
    public class TDoubleEndedQueue<T> {
-
-      #region Fields:
-      readonly T b;// Value of unassigned slot in array.
+      #region Properties --------------------------------------------
       T[] mData = new T[4];
-      int mCount;
-      int mFront;
-      int mBack;
-      #endregion
+      int mCount;       // Number of elements.
+      int mFront;       // The index from which to enqueue or dequeue at the beginning of the queue.
+      int mBack;        // The index from which to enqueue or dequeue at the end of the queue.
 
-      #region Properties:
       /// <summary> Returns true if the <see cref="TDoubleEndedQueue{T}"></see> has no elements in it. </summary>
       public bool IsEmpty => mCount == 0;
 
@@ -40,7 +37,7 @@ public class A10 {
       public int Count => mCount;
       #endregion
 
-      #region Methods:
+      #region Methods -----------------------------------------------
       /// <summary>
       /// Removes and returns the object at the end of the<see cref="TDoubleEndedQueue{T}"></see>
       /// </summary>
@@ -119,6 +116,7 @@ public class A10 {
       }
       #endregion 
    }
+   #endregion
 }
 
 
