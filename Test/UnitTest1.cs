@@ -35,7 +35,7 @@ public class UnitTest1 {
       char specialChar = 'm';
       bool sortOrder = random.Next (0, 2) == 1;
       input = sortOrder ? input.OrderBy (x => x).ToArray () : input.OrderByDescending (x => x).ToArray ();
-      output = T25.SpecialSorted (input.ToArray (), specialChar, sortOrder);
+      output = T25.SpecialSorted (input, specialChar, sortOrder);
       (input, output) = (input.Where (a => a != specialChar).ToArray (), output.Where (a => a != specialChar).ToArray ());
       Assert.AreEqual (new string (input), new string (output));
    }
@@ -46,9 +46,9 @@ public class UnitTest1 {
       var t25 = new T25 ();
       char[] input = new char[] { 't', 'r', 'U', 'm', 'P', 'M', 'E', 't', 'a', 'm', 'A', 'T', 'I', 'o', 'N' };
       char specialChar = 'T';
-      var output = T25.SpecialSorted (input.ToArray (), specialChar);
-      Assert.AreEqual (input.Count (c => c == char.ToLower(specialChar) || c == char.ToUpper (specialChar)), 
-         output.Count (c => c == char.ToLower (specialChar) || c == char.ToUpper (specialChar))) ;
+      (input, specialChar) = (input.Select (char.ToUpper).ToArray (), char.ToUpper (specialChar)); // As the input characters are insensitive.
+      var output = T25.SpecialSorted (input, specialChar);
+      Assert.AreEqual (input.Count (c => c == specialChar), output.Count (c => c == specialChar));
    }
 
    [TestMethod]
@@ -58,7 +58,7 @@ public class UnitTest1 {
       char[] input = new char[] { 't', 'r', 'U', 'm', 'P', 'M', 'E', 't', 'a', 'm', 'A', 'T', 'I', 'o', 'N' };
       char specialChar = 'r';
       int n = input.Count (c => c == specialChar);
-      var output = T25.SpecialSorted (input.ToArray (), specialChar);
+      var output = T25.SpecialSorted (input, specialChar);
       Assert.AreEqual (Array.IndexOf (output, specialChar), output.Length - n);
    }
 }
