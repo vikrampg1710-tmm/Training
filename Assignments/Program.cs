@@ -15,47 +15,68 @@ public class A15 {
       var p = new PriorityQueue<int> ();
    }
 
+   #region Priority Queue Class -------------------------------------------------------------------
+   /// <summary>
+   /// Represents a collection of items that have a value and a priority. 
+   /// On dequeue, the item with the lowest priority value is removed.
+   /// </summary>
+   /// <typeparam name="T"></typeparam>
    public class PriorityQueue<T> where T : IComparable<T> {
-      readonly List<T> Queue = new ();
-      public void Enqueue (T value) {
-         Queue.Add (value);
-         SiftUp (Queue.Count - 1);
+      #region Propeties ---------------------------------------------
+      readonly List<T> queue = new ();
+      public bool IsEmpty => queue.Count == 0;
+      #endregion
 
-         void SiftUp (int ChildIndex) {
-            if (ChildIndex > 0) {
-               int ParentIndex = (ChildIndex - 1) / 2;
-               if (Queue[ChildIndex].CompareTo (Queue[ParentIndex]) < 0)
-                  (Queue[ChildIndex], Queue[ParentIndex]) = (Queue[ParentIndex], Queue[ChildIndex]);
-               SiftUp (ParentIndex);
-            }
-         }
-      }
-
+      #region Methods -----------------------------------------------
+      /// <summary>
+      /// Removes and returns the minimal element from the PriorityQueue<typeparamref name="T"/> - that is, the element with the lowest priority value.
+      /// </summary>
+      /// <returns>Returns the element with the lowest priority value from the queue</returns>
+      /// <exception cref="Exception"></exception>
       public T Dequeue () {
-         if (IsEmpty) throw new Exception ("Queue Empty");
+         if (IsEmpty) throw new Exception ("Queue is empty!");
          else {
-            var item = Queue[0];
-            Queue[0] = Queue[^1];
-            Queue.RemoveAt (Queue.Count - 1);
-            SiftDown (0);
+            var item = queue[0];
+            queue[0] = queue[^1];
+            queue.RemoveAt (queue.Count - 1);
+            ShiftDown (0);
             return item;
          }
 
-         void SiftDown (int ParentIndex) {
-            int Child1_Index = ParentIndex * 2 + 1;
-            int Child2_Index = Child1_Index + 1;
-            if (Child1_Index > Queue.Count - 1) return; // Return if the parent has no children.
-            if (Child2_Index <= Queue.Count - 1 && Queue[Child2_Index].CompareTo (Queue[Child1_Index]) < 0) 
-               Child1_Index = Child2_Index;
-            if (Queue[Child1_Index].CompareTo (Queue[ParentIndex]) < 0)
-               (Queue[Child1_Index], Queue[ParentIndex]) = (Queue[ParentIndex], Queue[Child1_Index]);
-            SiftDown (Child1_Index);
+         ///<summary>Rearranges the queue elements based on the priority value by shifting down the elements</summary>
+         void ShiftDown (int parentIndex) {
+            int child1_Index = parentIndex * 2 + 1;
+            int child2_Index = child1_Index + 1;
+            if (child1_Index > queue.Count - 1) return; // Return if the parent has no children.
+            if (child2_Index <= queue.Count - 1 && queue[child2_Index].CompareTo (queue[child1_Index]) < 0) 
+               child1_Index = child2_Index;
+            if (queue[child1_Index].CompareTo (queue[parentIndex]) < 0)
+               (queue[child1_Index], queue[parentIndex]) = (queue[parentIndex], queue[child1_Index]);
+            ShiftDown (child1_Index);
          }
       }
-      public bool IsEmpty {
-         get => Queue.Count == 0;
+
+      /// <summary>
+      /// Enqueues a sequence of elements pairs to the PriorityQueue<typeparamref name="T"/>, all associated with the specified priority.
+      /// </summary>
+      /// <param name="value"></param>
+      public void Enqueue (T value) {
+         queue.Add (value);
+         ShiftUp (queue.Count - 1);
+
+         ///<summary>Rearranges the queue elements based on the priority value by shifting up the elements</summary>
+         void ShiftUp (int childIndex) {
+            if (childIndex > 0) {
+               int parentIndex = (childIndex - 1) / 2;
+               if (queue[childIndex].CompareTo (queue[parentIndex]) < 0)
+                  (queue[childIndex], queue[parentIndex]) = (queue[parentIndex], queue[childIndex]);
+               ShiftUp (parentIndex);
+            }
+         }
       }
+      #endregion
    }
+   #endregion
 }
 
 
