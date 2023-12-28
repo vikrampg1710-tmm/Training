@@ -33,7 +33,6 @@ public class A12 {
       readonly string[] DictWords = File.ReadAllLines (@"c:\etc\dict-5.txt"),
                         GuessWords = File.ReadAllLines (@"c:\etc\puzzle-5.txt");
 
-      // Function to run the game.
       public void PlayTheGame () {
          SetTheBoard ();
          DisplayTheBoard ();
@@ -45,7 +44,7 @@ public class A12 {
          Console.CursorTop = 28;
       }
 
-      // Function to initialize the game.
+      /// <summary>Initializes the game</summary>
       public void SetTheBoard () {
          Console.OutputEncoding = Encoding.Unicode;
          Console.CursorVisible = false;
@@ -64,7 +63,7 @@ public class A12 {
          ithComment = 1;
       }
 
-      // Function to display the game board in overwritten.
+      /// <summary>Displays the updated game board</summary>
       public void DisplayTheBoard () {
          // TYPING BOARD:
          Console.SetCursorPosition (OriginX, OriginY);
@@ -93,20 +92,20 @@ public class A12 {
          // KEYBOARD:
          Console.SetCursorPosition (OriginX - 5, Console.CursorTop - 1);
          Console.ForegroundColor = DarkGray;
-         Console.WriteLine (new string ('_', 31) + "\n"); // Top Border.
+         Console.WriteLine (new string ('_', 31) + "\n");
          Console.CursorLeft = OriginX - 5;
          for (char c = 'A'; c <= 'Z'; c++) {
             Console.Write ($"{ColorPrint (c)}    ");
-            if ((c - 64) % 7 == 0) Console.SetCursorPosition (OriginX - 5, Console.CursorTop + 1); // Go to newline for every 8th letter.
+            if ((c - 64) % 7 == 0) Console.SetCursorPosition (OriginX - 5, Console.CursorTop + 1);
          }
          Console.WriteLine ();
          Console.ForegroundColor = DarkGray;
          Console.CursorLeft = OriginX - 5;
-         Console.WriteLine (new string ('_', 31) + "\n"); // Bottom Border.
+         Console.WriteLine (new string ('_', 31) + "\n");
          DisplayComments ();
-         Console.SetCursorPosition (OriginX + Text.Length * 5, OriginY + count * 3); // Setting the Cursor at appropriate position for next character.
+         Console.SetCursorPosition (OriginX + Text.Length * 5, OriginY + count * 3);
 
-         // A local function to display the comments.
+         /// <summary>Displays the comment below the keyboard</summary>
          void DisplayComments () {
             Console.CursorTop = OriginY + 25;
             Console.Write (new string (' ', Console.WindowWidth));
@@ -124,7 +123,7 @@ public class A12 {
             Console.ResetColor ();
          }
 
-         // A local function to color the keyboard letters.
+         /// <summary>Changes the color of keyboard letters</summary>
          char ColorPrint (char letter) {
             if (GreenList.Contains (letter)) { Console.ForegroundColor = Green; return letter; } 
             else if (BlueList.Contains (letter)) { Console.ForegroundColor = Blue; return letter; } 
@@ -134,7 +133,7 @@ public class A12 {
          }
       }
 
-      // Function to update the game state based on user inputs.
+      /// <summary>Gets the input key from user and updates the game state</summary>
       public void UpdateGameState (ConsoleKeyInfo key) {
          char input = char.ToUpper (Convert.ToChar (key.KeyChar));
          if ((key.Key == ConsoleKey.Backspace || key.Key == ConsoleKey.LeftArrow) && Text.Length != 0) {
