@@ -26,13 +26,13 @@ public class A3 {
       Console.Write ("(1) Input the 7 letters  [or]\r\n" +
          "(2) See the results of default input letters: [ 'U', X, A, T, L, N, E ]\r\n" +
          "Press 1 or 2: ");
-      if (Console.ReadKey ().KeyChar == '1') GetInput (ref input);
+      if (Console.ReadKey ().KeyChar == '1') input = GetInput ();
       Console.WriteLine ();
-      PrintScore (input);
+      PrintResult (input);
 
       ///<summary>Gets the 7 letters as input from user</summary>
-      static List<char> GetInput (ref List<char> input) {
-         input.Clear ();
+      static List<char> GetInput () {
+         List<char> input = new ();
          Console.WriteLine ("\r\n(Note: Letter 1 is the compulsory letter.)");
          GetAgain: Console.Write ($"Enter letter {input.Count + 1}: ");
          char letter = char.ToUpper (Console.ReadLine ()[0]);
@@ -43,7 +43,7 @@ public class A3 {
       }
 
       ///<summary>Prints the output results in the console page</summary>
-      static void PrintScore (List<char> input) {
+      static void PrintResult (List<char> input) {
          Console.WriteLine ("\r\n#Possible words with score in the prefix (Pangram words are displayed in GREEN):");
          string[] dictWords = File.ReadAllLines (@"c:/etc/words.txt");
          Dictionary<string, int> answer = new ();
