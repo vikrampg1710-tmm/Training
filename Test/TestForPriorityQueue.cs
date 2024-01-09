@@ -16,13 +16,12 @@ public class TestsForPriorityQueue {
          list.Add (element);
       }
       list.Sort ();
-      for (int i = 0; i < 20; i++) {
+      for (int i = 0; i < 20; i++)
          Assert.AreEqual (list[i], p.Dequeue ());
-      }
    }
 
    [TestMethod]
-   // Test 2: To check whether exception is thrown or not, when dequeuing the empty queue.
+   // Test 2: To check whether exception is thrown or not, when dequeuing an empty queue.
    public void TestMethod2 () {
       PriorityQueue<int> PQ = new ();
       Assert.ThrowsException<Exception> (() => PQ.Dequeue ());
@@ -40,19 +39,16 @@ public class TestsForPriorityQueue {
          list.Add (element);
       }
       list.Sort ();
-      for (int i = 0; i < 20; i++) {
+      for (int i = 0; i < 20; i++)
          Assert.AreEqual (list[i], p.Dequeue ());
-      }
       list.RemoveRange (0, 20);
-
       for (int i = 0; i < 20; i++) {
          int element = random.Next (100);
          p.Enqueue (element);
          list.Add (element);
       }
       list.Sort ();
-      for (int i = 0; i < list.Count; i++) {
+      for (int i = 0; i < list.Count; i++)
          Assert.AreEqual (list[i], p.Dequeue ());
-      }
    }
 }
