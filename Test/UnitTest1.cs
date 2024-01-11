@@ -12,7 +12,8 @@ public class WordleTest {
    public void TestForCheckingColorCoding () {
       SetConditions ();
       w.testOutputFile = File.CreateText ("../../../../Test/TestFiles/Board_RHS.txt");
-      List<ConsoleKey> keys = new () { T, O, R, C, J, Backspace, H, Enter, S, H, A, R, P, Enter, K, N, O, W, S, Enter, S, T, A, R, K, Enter };
+      List<ConsoleKey> keys = new () { T, O, R, F, J, Backspace, LeftArrow, C, H, Enter, 
+         S, H, A, R, P, Enter, K, N, O, W, S, Enter, S, T, A, R, K, Enter };
       w.DisplayTheBoard ();
       foreach (var c in keys) {
          w.UpdateGameState (c);
@@ -28,9 +29,9 @@ public class WordleTest {
       SetConditions ();
       List<ConsoleKey> keyInputs = new () { S, T, A, R, K, Enter };
       foreach (var c in keyInputs) w.UpdateGameState (c);
-      Assert.AreEqual (w.text, w.secretWord);
-      Assert.IsTrue (w.ithComment == 2);
-      Assert.IsTrue (w.gameOver);
+      Assert.AreEqual (w.mWord, w.mSecretWord);
+      Assert.IsTrue (w.mComment == $"Correct! You have won in {w.mTriesCount} tries.");
+      Assert.IsTrue (w.mGameOver);
    }
 
    [TestMethod]
@@ -42,10 +43,10 @@ public class WordleTest {
          foreach (var c in keyInputs)
             w.UpdateGameState (c);
       }
-      Assert.AreNotSame (w.text, w.secretWord);
-      Assert.IsTrue (w.ithComment == 3);
-      Assert.IsTrue (w.triesCount == 6);
-      Assert.IsTrue (w.gameOver);
+      Assert.AreNotSame (w.mWord, w.mSecretWord);
+      Assert.IsTrue (w.mComment == $"GAME OVER, you have lost! Secret word: {w.mSecretWord.ToUpper ()}");
+      Assert.IsTrue (w.mTriesCount == 6);
+      Assert.IsTrue (w.mGameOver);
    }
 
    [TestMethod]
@@ -53,36 +54,35 @@ public class WordleTest {
    public void TestForStates () {
       SetConditions ();
       List<ConsoleKey> keys = new () { A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P,
-         Q, R, S, T, U, Enter, V, W, X, Y, Z, Tab, Spacebar, Escape };
+         Q, R, S, T, U, V, W, X, Y, Z, Tab, Spacebar, Escape };
       for (int i = 0; i < 1000; i++) {
          int num = r.Next (0, keys.Count);
          ConsoleKey c = num % 3 == 0 ? Backspace
                       : num % 3 == 1 ? Enter
                       : keys[num];
-         int len1 = w.text.Length, tryCount1 = w.triesCount;
+         int len1 = w.mWord.Length, tryCount1 = w.mTriesCount;
          w.UpdateGameState (c);
-         int len2 = w.text.Length, tryCount2 = w.triesCount;
-         bool isLastLetter = len2 == 5;
-         if (char.IsAsciiLetter (Convert.ToChar (c)) && !isLastLetter) {
+         int len2 = w.mWord.Length, tryCount2 = w.mTriesCount;
+         if (char.IsAsciiLetter (Convert.ToChar (c)) && len2 != 5) {     // If input key is an alphabet
             Assert.AreEqual (len1 + 1, len2);
-            Assert.IsTrue (w.word[tryCount2][len2] == '\u25cc');
-         } else if (c == Enter && len2 == 5 && w.dictWords.Contains (w.text)) {
+            Assert.IsTrue (w.mWords[tryCount2][len2] == '\u25cc');
+         } else if (c == Enter && len2 == 5 && w.mDictWords.Contains (w.mWord)) { // If input key is ENTER
             Assert.IsTrue (tryCount2 == tryCount1 + 1);
-            if (!w.gameOver) Assert.IsTrue (len2 == 0);
-         } else if (c == Backspace || c == LeftArrow) {
+            if (!w.mGameOver) Assert.IsTrue (len2 == 0);
+         } else if (c == Backspace || c == LeftArrow) {      // If input key is BACKSPACE [or] LEFTARROW
             if (len1 != 0) {
                Assert.AreEqual (len1 - 1, len2);
-               Assert.IsTrue (w.word[tryCount2][len2] == '\u25cc');
+               Assert.IsTrue (w.mWords[tryCount2][len2] == '\u25cc');
             }
-            if (len1 != 5 && len2 != 0) Assert.IsTrue (w.word[tryCount2][len1] == '\u00b7');
+            if (len1 != 5 && len2 != 0) Assert.IsTrue (w.mWords[tryCount2][len1] == '\u00b7');
          }
       }
    }
 
    void SetConditions () {
-      w.testing = true;
+      w.mTesting = true;
       w.SetTheBoard ();
-      w.secretWord = "STARK";
+      w.mSecretWord = "STARK";
    }
 
    bool CheckTextFilesEqual (string f1, string f2) {
