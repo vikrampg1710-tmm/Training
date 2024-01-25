@@ -1,32 +1,29 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.IO;
-using System.Linq;
-using System.Threading;
 
 namespace SparkTest;
 class Program {
-   static void Main (string[] args) {
+   static void Main () {
       string[] input = File.ReadAllLines ("C:/etc/input.txt");
-      Dictionary<int, string[]> dict = new ();
-      foreach (string s in input) {
-         int end = s.IndexOf (':');
-         int id = int.Parse(s[4..end]);
-         var values = s[(end + 1)..].Split (';');
-         dict[id] = values;
-      }
-
-      bool Filter (string[] strings) {
-         int red = 0, green = 0, blue = 0;
-         for (int i = 0; i < strings.Length; i++) {
-            string s = strings[i];
-            int start = 4, end = 1;
-            int g = s.IndexOf ("green");
-            int r = s.IndexOf ("red");
-            int b = s.IndexOf ("blue");
-            int gvalue = int.Parse ($"{s[(g - 4)..(g - 1)]}".Trim());
+      int count = 0;
+      for (int i = 0; i < input.Length; i++) {
+         bool ok = false;
+         var l = input[i];
+         var a = l[(l.IndexOf (':') + 1)..].Split (';');
+         for (int j = 0; j < a.Length; j++) {
+            var b = a[j].TrimStart();
+            var c = b.Split (' ');
+            var (red, green, blue) = (0, 0, 0);
+            for (int k = 0; k < c.Length; k++) {
+               var s = c[k].Trim(',');
+               if (s == "red") red += int.Parse (c[k - 1]);
+               else if (s == "green") green += int.Parse (c[k - 1]);
+               else if (s == "blue") blue += int.Parse (c[k - 1]);
+            }
+            ok = red < 13 && green < 14 && blue < 15;
          }
-         return true;
+         if (ok) count += i + 1;
       }
+      Console.WriteLine ($"The sum of possible game IDs = {count}");
    }
 }
