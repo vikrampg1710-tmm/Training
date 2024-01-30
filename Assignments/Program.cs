@@ -1,4 +1,12 @@
-﻿using System;
+﻿// ---------------------------------------------------------------------------------------
+// Academy23 Assignments
+// Copyright (c) Metamation India.
+// ---------------------------------------------------------------------------------------
+// Program.cs
+// A12 - Wordle Game
+// ---------------------------------------------------------------------------------------
+
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -22,11 +30,12 @@ public class Wordle {
    readonly Dictionary<char, ConsoleColor> mColorCodes = new (); // To store foreground color to each char
    string[] mDictList, mGuessList;          // To store loaded strings
    StreamWriter mTextFile = null;           // Created for testing purpose
-   public string SecretWord {
+
+   protected string SecretWord {
       get => mSecretWord;
       set => mSecretWord = value;
    }
-   public List<List<char>> TriedWords => mTriedWords;
+   protected List<List<char>> TriedWords => mTriedWords;
    protected string GuessWord {
       get => mGuessWord;
       set => mGuessWord = value;

@@ -111,6 +111,6 @@ public class WordleTest : Wordle {
 
    bool CheckTextFilesEqual (string f1, string f2) {
       string path = Directory.GetCurrentDirectory () + "/../../../TestFiles/", type = ".txt";
-      return File.ReadAllText (path + f1 + type).Length == File.ReadAllText (path + f2 + type).Length;
+      return File.ReadAllText (path + f1 + type) == File.ReadAllText (path + f2 + type);
    }
 }
