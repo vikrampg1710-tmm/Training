@@ -6,6 +6,7 @@ class Program {
    static void Main () {
       string[] input = File.ReadAllLines ("C:/etc/input.txt");
       int count = 0;
+      Console.WriteLine ("The valid game IDs are:");
       for (int i = 0; i < input.Length; i++) {
          bool ok = false;
          var l = input[i];
@@ -21,9 +22,10 @@ class Program {
                else if (s == "blue") blue += int.Parse (c[k - 1]);
             }
             ok = red < 13 && green < 14 && blue < 15;
+            if (!ok) break;
          }
-         if (ok) count += i + 1;
+         if (ok) { count += i + 1; Console.WriteLine ($"Game ID: {i + 1}"); }
       }
-      Console.WriteLine ($"The sum of possible game IDs = {count}");
+      Console.WriteLine ($"\r\nTotal = {count}");
    }
 }
