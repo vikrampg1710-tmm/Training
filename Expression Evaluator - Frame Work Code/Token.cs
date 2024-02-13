@@ -1,7 +1,6 @@
 ﻿namespace Eval;
 
-abstract class Token {
-}
+abstract class Token { }
 
 abstract class TNumber : Token {
    public abstract double Value { get; }
@@ -39,12 +38,22 @@ class TOpArithmetic : TOperator {
 
    public double Evaluate (double a, double b) {
       return Op switch {
-         '+' => a + b, '-' => a - b, 
-         '*' => a * b, '/' => a / b,
+         '+' => a + b,
+         '-' => a - b,
+         '*' => a * b,
+         '/' => a / b,
          '^' => Math.Pow (a, b),
          _ => throw new EvalException ($"Unknown operator: {Op}"),
       };
    }
+}
+
+class TOpUnary : TOperator {
+   public TOpUnary (Evaluator eval, char ch) : base (eval) => Op = ch;
+   public char Op { get; private set; }
+   public override string ToString () => $"Unary: {Op}";
+   public override int Priority => 4 + mEval.BasePriority;
+   public double Evaluate (double a) => Op == '-' ? -a : a;
 }
 
 class TOpFunction : TOperator {
@@ -55,10 +64,10 @@ class TOpFunction : TOperator {
 
    public double Evaluate (double f) {
       return Func switch {
-         "sin" => Math.Sin (D2R (f)), 
+         "sin" => Math.Sin (D2R (f)),
          "cos" => Math.Cos (D2R (f)),
          "tan" => Math.Tan (D2R (f)),
-         "sqrt" => Math.Sqrt (f),
+         "sqrt" => f >= 0 ? Math.Sqrt (f) : throw new EvalException ($"Cannot handle complex numbers: sqrt({f})"),
          "log" => Math.Log (f),
          "exp" => Math.Exp (f),
          "asin" => R2D (Math.Asin (f)),

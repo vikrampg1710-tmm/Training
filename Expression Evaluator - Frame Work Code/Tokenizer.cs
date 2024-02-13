@@ -10,13 +10,16 @@ class Tokenizer {
 
    public Token Next () {
       while (mN < mText.Length) {
+         char preCh = mN == 0 ? '\0' : char.ToLower (mText[mN - 1]); // Previous char
          char ch = char.ToLower (mText[mN++]);
-         switch (ch) {
-            case ' ' or '\t': continue;
-            case (>= '0' and <= '9') or '.': return GetNumber ();
-            case '(' or ')': return new TPunctuation (ch);
-            case '+' or '-' or '*' or '/' or '^' or '=': return new TOpArithmetic (mEval, ch);
-            case >= 'a' and <= 'z': return GetIdentifier ();
+         switch (ch, preCh) {
+            case (' ' or '\t', _): continue;
+            case ((>= '0' and <= '9') or '.', _): return GetNumber ();
+            case ('(' or ')', _): return new TPunctuation (ch);
+            case ('+' or '-' or '*' or '/' or '^' or '=', >= 'a' and <= 'z'): return new TOpArithmetic (mEval, ch);
+            case ('-' or '+', not (>= '0' and <= '9')): return new TOpUnary (mEval, ch);
+            case ('+' or '-' or '*' or '/' or '^' or '=', _): return new TOpArithmetic (mEval, ch);
+            case ( >= 'a' and <= 'z', _): return GetIdentifier ();
             default: return new TError ($"Unknown symbol: {ch}");
          }
       }
