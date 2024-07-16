@@ -25,7 +25,7 @@ class Evaluator {
       while (mOperators.Count > 0) ApplyOperator ();
       double f = mOperands.Pop ();
       if (tVariable != null) mVars[tVariable.Name] = f;
-      return f; 
+      return f;
    }
 
    public int BasePriority { get; private set; }
@@ -38,8 +38,11 @@ class Evaluator {
 
    void Process (Token token) {
       switch (token) {
-         case TNumber num: 
-            mOperands.Push (num.Value); 
+         case TOpUnary unary:
+            mOperators.Push (unary);
+            break;
+         case TNumber num:
+            mOperands.Push (num.Value);
             break;
          case TOperator op:
             while (mOperators.Count > 0 && mOperators.Peek ().Priority > op.Priority)
@@ -59,6 +62,7 @@ class Evaluator {
    void ApplyOperator () {
       var op = mOperators.Pop ();
       var f1 = mOperands.Pop ();
+      if (op is TOpUnary unary) mOperands.Push (unary.Evaluate (f1));
       if (op is TOpFunction func) mOperands.Push (func.Evaluate (f1));
       else if (op is TOpArithmetic arith) {
          var f2 = mOperands.Pop ();
